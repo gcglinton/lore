@@ -1,0 +1,156 @@
+
+// Viewable at https://dbdiagram.io/d
+
+
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+enum experiments_levelofeffort {
+  "1 - Just need a space"
+  "2 - Can do most things, but might need help"
+  "3 - Need help"
+  "4 - Can do a few things, but mostly not"
+  "5 - Need everything done for me"
+}
+
+enum experiments_datasensitivity {
+  "Unclassified"
+  "Protected A"
+  "Protected B"
+  "Other"
+}
+
+Table experiments {
+  id integer [primary key]
+  name varchar
+  status integer
+  created_ts timestamp [default: `now()`]
+  created_user integer
+  delegated bool [default: false]
+  sbda integer
+  research_initiative integer
+  area_of_science integer
+  description text
+  objectives text
+  notes text
+  level_of_effort experiments_levelofeffort [default: 3]
+  cloud_provider integer
+  forcasted_end date [default: `now()`]
+  fin_forecasted float
+  fin_initial float
+  fin_actual float
+  last_updated timestamp [default: `now()`]
+  fin_automated_reports bool [default: false]
+  environment_name varchar
+  funding_source integer
+  data_sensivitity experiments_datasensitivity
+  progress integer
+  is_deleted bool
+  is_archived bool
+}
+
+Table experiments_statuses {
+  id integer [primary key]
+  name varchar
+  is_deleted bool
+  is_archived bool
+}
+
+Table experiments_links {
+  id integer [primary key]
+  experiment_id integer
+  kind varchar
+  link varchar
+}
+
+Table experiments_tags {
+  id integer [primary key]
+  name varchar
+  description text
+  is_deleted bool
+  is_archived bool
+}
+
+Table experiments_areasofscience {
+  id integer [primary key]
+  name varchar
+  description text
+  is_deleted bool
+  is_archived bool
+}
+
+Table map_experiments_users {
+  experiment_id integer
+  user_id integer
+  role_id integer
+}
+
+Table map_experiments_tags {
+  experiment_id integer
+  tag_id integer
+}
+
+Table map_experiments_related {
+  experiment_1 integer
+  experiment_2 integer
+}
+
+Table users {
+  id integer [primary key]
+  username varchar
+  name_first varchar
+  name_last varchar
+  email varchar
+  phone varchar
+  sbda integer
+  created_at timestamp
+  is_legoteam bool
+  is_deleted bool
+  is_archived bool
+}
+
+Table users_roles {
+  id integer [pk]
+  name varchar
+  description text
+  is_deleted bool
+  is_archived bool
+}
+
+Table departments {
+  id integer [pk]
+  name varchar
+  acronym varchar
+  environment_code varchar
+  is_science bool
+  is_deleted bool
+  is_archived bool
+}
+
+Table cloud_providers {
+  id integer [pk]
+  name varchar
+  name_short varchar
+  is_deleted bool
+  is_archived bool
+}
+
+Ref: experiments.status > experiments_statuses.id
+Ref: experiments.created_user > users.id
+Ref: experiments.sbda > departments.id
+Ref: experiments.cloud_provider > cloud_providers.id
+Ref: experiments.id <> experiments_links.experiment_id
+Ref: experiments.area_of_science > experiments_areasofscience.id
+
+Ref: users.sbda > departments.id
+
+Ref: map_experiments_users.experiment_id <> experiments.id
+Ref: map_experiments_users.user_id <> users.id
+Ref: map_experiments_users.role_id <> users_roles.id
+
+Ref: map_experiments_tags.tag_id <> experiments_tags.id
+Ref: map_experiments_tags.experiment_id <> experiments.id
+
+Ref: map_experiments_related.experiment_1 <> experiments.id
+Ref: map_experiments_related.experiment_2 <> experiments.id
+
+
