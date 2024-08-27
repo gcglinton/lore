@@ -1,0 +1,9 @@
+{% extends "crm/base.html" %}
+
+{% block title %}Lore - CRM | {{ experiment.name }} (SPIR-{{ experiment.id|stringformat:"04d" }}){% endblock %}
+{% block content %}
+
+    <p>SPIR-{{ experiment.id|stringformat:"04d" }}</p>
+    <p>{{ experiment.name }}</p>
+    <p>{{ experiment.status }}</p>
+{% endblock %}

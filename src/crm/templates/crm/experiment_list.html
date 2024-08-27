@@ -1,0 +1,34 @@
+{% extends "crm/base.html" %}
+
+{% block title %}Lore - CRM{% endblock %}
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+
+
+
+    {% if experiments %}
+
+        {% for e in experiments %}
+        <tr>
+            <th scope="row">SPIR-{{ e.id|stringformat:"04d" }}</th>
+            <td><a href="{% url 'crm:detail' e.id %}">{{ e.name }}</a></td>
+            <td>{{ e.status }}</td>
+        </tr>
+        {% endfor %}
+
+    {% else %}
+        <td colspan="3">No Experiments!</td>
+
+    {% endif %}
+    </tbody>
+</table>
+{% endblock %}
