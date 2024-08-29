@@ -17,4 +17,6 @@ This is a very standard Django project, so running a local server is as simple a
 
 This is an API, with no front-end, so there's nothing to really open in the browser (or there is, but it's not interesting). You can check out [http://127.0.0.1:8000/items/](http://127.0.0.1:8000/items/) for a DB-less route, or [http://127.0.0.1:8000/heros/](http://127.0.0.1:8000/heros/) for one that queries the DB.
 
-FastAPI has a built-in documentation engine, which you can see at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs), or [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+FastAPI has a built-in documentation engine, which you can see at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs), or [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc).
+
+You can change the port that it's listening on (if you wanted to run both this, and the Django demo at the same time), by specifying a `--port 8001` argument to `fastapi`, like `fastapi dev --port 8001 main.py`, and then all requests above would need to use that new port.

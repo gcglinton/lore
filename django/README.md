@@ -14,3 +14,5 @@ This is a very standard Django project, so running a local server is as simple a
 There is currently only a single application in the Django project, for the Client Relationship Manager (CRM). Eventually there will likely be a number of other applications for various other features/interfaces required by the team.
 
 The CRM itself is served at `http://127.0.0.1:8000/crm`, and the Django administrative interface is at `http://127.0.0.1:8000/admin`.
+
+You can change the port that it's listening on (if you wanted to run both this, and the FastAPI demo at the same time), by specifying a port to `manage.py`, like `python manage.py runserver 8002`, and then all requests above would need to use that new port.

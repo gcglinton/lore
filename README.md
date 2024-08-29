@@ -15,19 +15,26 @@ There's two sample apps in this repo.
 
 The team has a fair amount of knowledge with Python, and it should serve as a good start. 
 
-Everything in the `django` folder is is written with [Django](https://www.djangoproject.com/).
-Everything in the `fastapi` folder is meant to be an backend API platform using FastAPI and SQLModel
+- `django` is written with [Django](https://www.djangoproject.com/)
+- `fastapi` is an API platform using [FastAPI](https://fastapi.tiangolo.com/)
+
+Those folder names might seem like nonsense, but I couldn't come up with anything better.
 
 ## Installtion
 
-A Python interpreter is required, along with `pip`.
+A Python interpreter is required (ideally something modern, a la 3.12+), along with `pip`.
 
-It is suggested to create a [virtual environment](https://virtualenvwrapper.readthedocs.io/en/latest/) in order to keep packages separate for this project, and ensure proper operation.
+I would strongly suggest creating a [virtual environment](https://virtualenvwrapper.readthedocs.io/en/latest/) in order to keep packages separate for this project, and ensure proper operation.
 
-With that configured, simply run `pip install -r requirements.txt` to install all the dependencies for this project.
+On Ubuntu 24.04:
+```
+sudo apt install python3-virtualenvwrapper
+source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
+mkvirtualenv lore
+```
+
+With that configured, simply run `pip install -r requirements.txt` to install all the dependencies for everything here.
 
 ## How to use the application
-
-###
 
 Check README.md in each folder to see how to run them.
