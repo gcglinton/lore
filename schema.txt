@@ -31,64 +31,97 @@ Table experiments {
   progress integer [default: 0]
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    status
+    (is_deleted, is_archived)
+  }
 }
 
 Table experiments_statuses {
-  id integer [primary key, increment]
+  id integer [pk, increment]
   name varchar
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    (is_deleted, is_archived)
+  }
 }
 
 Table experiments_levelofeffort {
-  id integer [primary key, increment]
+  id integer [pk, increment]
   name varchar
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    (is_deleted, is_archived)
+  }
 }
 
 Table experiments_datasensitivity {
-  id integer [primary key, increment]
+  id integer [pk, increment]
   name varchar
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    (is_deleted, is_archived)
+  }
 }
 
 Table experiments_links {
-  id integer [primary key, increment]
+  id integer [pk, increment]
   experiment_id integer [ref: <> experiments.id]
   kind varchar
   link varchar
+
+  indexes {
+    experiment_id
+  }
 }
 
 Table experiments_tags {
-  id integer [primary key, increment]
+  id integer [pk, increment]
   name varchar
   description text
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    (is_deleted, is_archived)
+  }
 }
 
 Table experiments_areasofscience {
-  id integer [primary key, increment]
+  id integer [pk, increment]
   name varchar
   description text
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    (is_deleted, is_archived)
+  }
 }
 
 Table experiments_fundingsource {
-  id integer [primary key, increment]
+  id integer [pk, increment]
   name varchar
   name_short varchar
   description text
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    (is_deleted, is_archived)
+  }
 }
 
 
 Table users {
-  id integer [primary key, increment]
+  id integer [pk, increment]
   username varchar
   name_first varchar
   name_last varchar
@@ -100,6 +133,12 @@ Table users {
   is_legoteam integer
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    email
+    is_legoteam
+    (is_deleted, is_archived)
+  }
 }
 
 Table users_roles {
@@ -108,6 +147,10 @@ Table users_roles {
   description text
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    (is_deleted, is_archived)
+  }
 }
 
 Table departments {
@@ -128,6 +171,10 @@ Table departments {
   is_science bool
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    (is_deleted, is_archived)
+  }
 }
 
 Table cloud_providers {
@@ -139,6 +186,10 @@ Table cloud_providers {
   contact_phone varchar
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    (is_deleted, is_archived)
+  }
 }
 
 Table lessons_learned {
@@ -159,11 +210,15 @@ Table lessons_learned {
   likely_to_recommend integer
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    guid
+    (is_deleted, is_archived)
+  }
 }
 
 Table canchat_survey {
   id integer [pk, increment]
-  experiment_id integer
   submitter integer [ref: > users.id]
   submitted timestamp
   position varchar
@@ -184,6 +239,10 @@ Table canchat_survey {
   comments text
   is_deleted bool [default: 0]
   is_archived bool [default: 0]
+
+  indexes {
+    (is_deleted, is_archived)
+  }
 }
 
 
@@ -191,16 +250,26 @@ Table link__experiments_users {
   experiment_id integer [ref: <> experiments.id]
   user_id integer [ref: <> users.id]
   role_id integer [ref: <> users_roles.id]
+
+  indexes {
+    (experiment_id, user_id)  [pk]
+  }
 }
 
 Table link__experiments_tags {
   experiment_id integer [ref: <> experiments.id]
   tag_id integer [ref: <> experiments_tags.id]
+
+  indexes {
+    (experiment_id, tag_id) [pk]
+  }
 }
 
 Table link__experiments_related {
   experiment_1 integer [ref: <> experiments.id]
   experiment_2 integer [ref: <> experiments.id]
+
+  indexes {
+    (experiment_1, experiment_2) [pk]
+  }
 }
-
-

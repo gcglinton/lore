@@ -38,3 +38,7 @@ With that configured, simply run `pip install -r requirements.txt` to install al
 ## How to use the application
 
 Check README.md in each folder to see how to run them.
+
+# DB Schema
+
+While nothing is finalized, there's a dbdiagram.io DBML definition in `schema.txt`. It would need to be properly re-written for Django, or FastAPI/SQLAlchemy, but that shouldn't take too long. It's meant to be a rough clone of the current DB that LTPMS uses, with some optimizations (centralized user tables, lookups/references for all possible fields, etc..)
