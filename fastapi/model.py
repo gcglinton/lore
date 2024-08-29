@@ -7,6 +7,5 @@ class Hero(SQLModel, table=True):
     name: str
     secret_name: str
     age: Optional[int] = None
-    foobar: str
 
-engine = create_engine("sqlite:///database.db")
+engine = create_engine("sqlite:///db.sqlite3")
