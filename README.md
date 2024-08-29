@@ -11,9 +11,12 @@ It was always widely suspected that we would end up building our own, and this i
 
 ## Platform
 
-This application is written with [Django](https://www.djangoproject.com/). The team has a fair amount of knowledge with Python, and it should serve as a good start. 
+There's two sample apps in this repo. 
 
-This will almost certainly change, as maybe Django isn't the right solution, and we should instead go with a front-end/backend model using *$language*/*$framwork*.
+The team has a fair amount of knowledge with Python, and it should serve as a good start. 
+
+Everything in the `django` folder is is written with [Django](https://www.djangoproject.com/).
+Everything in the `fastapi` folder is meant to be an backend API platform using FastAPI and SQLModel
 
 ## Installtion
 
@@ -25,19 +28,6 @@ With that configured, simply run `pip install -r requirements.txt` to install al
 
 ## How to use the application
 
-### Database Setup
+###
 
-The project is currently using an SQLite database because it's simple, but will likely transition to PostgreSQL, MySQL, or MSSQL at some point in order to provide better cloud operations.
-
-To setup the database, you'll need to run `python manage.py migrate` from withtin the `src` directory. This will create/update the SQLite file, all the required tables, and rows required to run the application.
-
-If you wish to access the admin interface, you'll need to run `python manage.py createsuperuser` to create an administrative user.
-
-### Running 
-
-
-This is a very standard Django project, so running a local server is as simple as running `python manage.py runserver`, and openning a browser to `http://127.0.0.1:8000/`.
-
-There is currently only a single application in the Django project, for the Client Relationship Manager (CRM). Eventually there will likely be a number of other applications for various other features/interfaces required by the team.
-
-The CRM itself is served at `http://127.0.0.1:8000/crm`, and the Django administrative interface is at `http://127.0.0.1:8000/admin`.
+Check README.md in each folder to see how to run them.
