@@ -1,156 +1,206 @@
-
 // Viewable at https://dbdiagram.io/d
-
 
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
-enum experiments_levelofeffort {
-  "1 - Just need a space"
-  "2 - Can do most things, but might need help"
-  "3 - Need help"
-  "4 - Can do a few things, but mostly not"
-  "5 - Need everything done for me"
-}
-
-enum experiments_datasensitivity {
-  "Unclassified"
-  "Protected A"
-  "Protected B"
-  "Other"
-}
 
 Table experiments {
-  id integer [primary key]
+  id integer [primary key, increment]
   name varchar
-  status integer
+  status integer [ref: > experiments_statuses.id]
   created_ts timestamp [default: `now()`]
-  created_user integer
+  created_user integer [ref: > users.id]
   delegated bool [default: false]
-  sbda integer
+  sbda integer [ref: > departments.id]
   research_initiative integer
-  area_of_science integer
+  area_of_science integer [ref: > experiments_areasofscience.id]
+  background text
   description text
-  objectives text
-  notes text
-  level_of_effort experiments_levelofeffort [default: 3]
-  cloud_provider integer
+  goals text
+  level_of_effort integer [ref: > experiments_levelofeffort.id, default: 3]
+  cloud_provider_requested integer [ref: - cloud_providers.id]
+  cloud_provider_actual integer [ref: - cloud_providers.id]
   forcasted_end date [default: `now()`]
   fin_forecasted float
   fin_initial float
-  fin_actual float
+  fin_actual float [default: 0.0]
   last_updated timestamp [default: `now()`]
   fin_automated_reports bool [default: false]
   environment_name varchar
-  funding_source integer
-  data_sensivitity experiments_datasensitivity
-  progress integer
-  is_deleted bool
-  is_archived bool
+  funding_source integer [ref: > experiments_fundingsource.id]
+  data_sensivitity integer [ref: > experiments_datasensitivity.id]
+  progress integer [default: 0]
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
 }
 
 Table experiments_statuses {
-  id integer [primary key]
+  id integer [primary key, increment]
   name varchar
-  is_deleted bool
-  is_archived bool
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
+}
+
+Table experiments_levelofeffort {
+  id integer [primary key, increment]
+  name varchar
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
+}
+
+Table experiments_datasensitivity {
+  id integer [primary key, increment]
+  name varchar
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
 }
 
 Table experiments_links {
-  id integer [primary key]
-  experiment_id integer
+  id integer [primary key, increment]
+  experiment_id integer [ref: <> experiments.id]
   kind varchar
   link varchar
 }
 
 Table experiments_tags {
-  id integer [primary key]
+  id integer [primary key, increment]
   name varchar
   description text
-  is_deleted bool
-  is_archived bool
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
 }
 
 Table experiments_areasofscience {
-  id integer [primary key]
+  id integer [primary key, increment]
   name varchar
   description text
-  is_deleted bool
-  is_archived bool
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
 }
 
-Table map_experiments_users {
-  experiment_id integer
-  user_id integer
-  role_id integer
+Table experiments_fundingsource {
+  id integer [primary key, increment]
+  name varchar
+  name_short varchar
+  description text
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
 }
 
-Table map_experiments_tags {
-  experiment_id integer
-  tag_id integer
-}
-
-Table map_experiments_related {
-  experiment_1 integer
-  experiment_2 integer
-}
 
 Table users {
-  id integer [primary key]
+  id integer [primary key, increment]
   username varchar
   name_first varchar
   name_last varchar
   email varchar
   phone varchar
-  sbda integer
+  sbda integer [ref: > departments.id]
   created_at timestamp
-  is_legoteam bool
-  is_deleted bool
-  is_archived bool
+  system_permissions varbinary
+  is_legoteam integer
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
 }
 
 Table users_roles {
-  id integer [pk]
+  id integer [pk, increment]
   name varchar
   description text
-  is_deleted bool
-  is_archived bool
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
 }
 
 Table departments {
-  id integer [pk]
+  id integer [pk, increment]
   name varchar
   acronym varchar
   environment_code varchar
+  cio_name varchar
+  cio_email varchar
+  cloud_dg_name varchar
+  cloud_dg_email varchar
+  aom_name varchar
+  aom_email varchar
+  client_exec_name varchar
+  client_exec_email varchar
+  sdm_name varchar
+  sdm_email varchar
   is_science bool
-  is_deleted bool
-  is_archived bool
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
 }
 
 Table cloud_providers {
-  id integer [pk]
+  id integer [pk, increment]
   name varchar
   name_short varchar
-  is_deleted bool
-  is_archived bool
+  contact_name varchar
+  contact_email varchar
+  contact_phone varchar
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
 }
 
-Ref: experiments.status > experiments_statuses.id
-Ref: experiments.created_user > users.id
-Ref: experiments.sbda > departments.id
-Ref: experiments.cloud_provider > cloud_providers.id
-Ref: experiments.id <> experiments_links.experiment_id
-Ref: experiments.area_of_science > experiments_areasofscience.id
+Table lessons_learned {
+  id integer [pk, increment]
+  guid uuid
+  experiment_id integer [ref: > experiments.id]
+  submitter integer [ref: > users.id]
+  submitted timestamp
+  reason_other text
+  service_quality integer
+  responsiveness integer
+  reliability integer
+  ease_of_use integer
+  benefits text
+  suggestions text
+  challenges text
+  how_evo_beneficial text
+  likely_to_recommend integer
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
+}
 
-Ref: users.sbda > departments.id
+Table canchat_survey {
+  id integer [pk, increment]
+  experiment_id integer
+  submitter integer [ref: > users.id]
+  submitted timestamp
+  position varchar
+  overall_experience integer
+  number_of_uses integer
+  use_examples text
+  model integer
+  model_temperature float
+  intuitiveness integer
+  response_relevance integer
+  irrelevant_examples text
+  improvements text
+  tasks_useful text
+  tasks_unuseful text
+  customization_importance integer
+  customization_ideas text
+  feedback text
+  comments text
+  is_deleted bool [default: 0]
+  is_archived bool [default: 0]
+}
 
-Ref: map_experiments_users.experiment_id <> experiments.id
-Ref: map_experiments_users.user_id <> users.id
-Ref: map_experiments_users.role_id <> users_roles.id
 
-Ref: map_experiments_tags.tag_id <> experiments_tags.id
-Ref: map_experiments_tags.experiment_id <> experiments.id
+Table link__experiments_users {
+  experiment_id integer [ref: <> experiments.id]
+  user_id integer [ref: <> users.id]
+  role_id integer [ref: <> users_roles.id]
+}
 
-Ref: map_experiments_related.experiment_1 <> experiments.id
-Ref: map_experiments_related.experiment_2 <> experiments.id
+Table link__experiments_tags {
+  experiment_id integer [ref: <> experiments.id]
+  tag_id integer [ref: <> experiments_tags.id]
+}
+
+Table link__experiments_related {
+  experiment_1 integer [ref: <> experiments.id]
+  experiment_2 integer [ref: <> experiments.id]
+}
 
 
