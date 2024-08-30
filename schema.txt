@@ -41,33 +41,33 @@ Table experiments {
 Table experiments_statuses {
   id integer [pk, increment]
   name varchar
+  description text
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
 Table experiments_levelofeffort {
   id integer [pk, increment]
   name varchar
+  description text
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
 Table experiments_datasensitivity {
   id integer [pk, increment]
   name varchar
+  description text
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
@@ -87,10 +87,9 @@ Table experiments_tags {
   name varchar
   description text
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
@@ -99,10 +98,9 @@ Table experiments_areasofscience {
   name varchar
   description text
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
@@ -112,10 +110,9 @@ Table experiments_fundingsource {
   name_short varchar
   description text
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
@@ -132,12 +129,11 @@ Table users {
   system_permissions varbinary
   is_legoteam integer
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
     email
     is_legoteam
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
@@ -146,10 +142,9 @@ Table users_roles {
   name varchar
   description text
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
@@ -170,10 +165,9 @@ Table departments {
   sdm_email varchar
   is_science bool
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
@@ -185,10 +179,9 @@ Table cloud_providers {
   contact_email varchar
   contact_phone varchar
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 

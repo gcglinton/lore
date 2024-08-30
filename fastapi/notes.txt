@@ -1,0 +1,17 @@
+RBAC:
+
+https://medium.com/@abdulwasa.abdulkader/how-to-implement-a-simple-role-based-access-control-rbac-in-fastapi-using-middleware-af07d31efa9f
+
+https://dev.to/moadennagi/role-based-access-control-using-fastapi-h59
+
+https://fastapi.tiangolo.com/bn/advanced/security/oauth2-scopes/
+
+https://github.com/Intility/fastapi-azure-auth
+
+https://github.com/identixone/fastapi_contrib
+
+General
+
+https://github.com/jowilf/starlette-admin
+
+https://github.com/awtkns/fastapi-crudrouter?tab=readme-ov-file
