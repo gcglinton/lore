@@ -35,7 +35,11 @@ def add_department(department: Departments__Edit):
         return new_data
 
 
-@router.put("/{department_id}", response_model=Departments)
+@router.post(
+    "/{department_id}",
+    response_model=Departments,
+    responses={404: {"description": "Not found"}},
+)
 def update_department(department_id: int, department: Departments__Edit):
     with Session(engine) as db:
         row = db.get(Departments__Base, department_id)
@@ -49,7 +53,11 @@ def update_department(department_id: int, department: Departments__Edit):
         return row
 
 
-@router.delete("/{department_id}", response_model=Departments)
+@router.delete(
+    "/{department_id}",
+    response_model=Departments,
+    responses={404: {"description": "Not found"}},
+)
 def delete_department(department_id: int):
     with Session(engine) as db:
         row = db.get(Departments__Base, department_id)
