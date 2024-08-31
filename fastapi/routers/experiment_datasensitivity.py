@@ -1,22 +1,24 @@
 from fastapi import APIRouter, HTTPException
-
 from sqlmodel import Session, select
-from model import engine
 
+from db import engine
+from db.models.experiment_datasensitivity import *
 
 router = APIRouter(
-    prefix = "/meta/experiment/datasensitivity",
-    tags = ["Experiment -  Data Sensitivity"],
-    )
+    prefix="/meta/experiment/datasensitivity",
+    tags=["Experiment -  Data Sensitivity"],
+)
 
-from model import Experiment_DataSensitivity, Experiment_DataSensitivity__Base, Experiment_DataSensitivity__Edit
 
 @router.get("/", response_model=list[Experiment_DataSensitivity])
 def list_experiment_data_sensivitity():
     with Session(engine) as db:
-        statement = select(Experiment_DataSensitivity__Base).where(Experiment_DataSensitivity__Base.is_deleted == 0)
+        statement = select(Experiment_DataSensitivity__Base).where(
+            Experiment_DataSensitivity__Base.is_deleted == 0
+        )
         return db.exec(statement).all()
-    
+
+
 @router.post("/", response_model=Experiment_DataSensitivity)
 def add_experiment_data_sensivitity(datasensitivity: Experiment_DataSensitivity__Edit):
     with Session(engine) as db:
@@ -28,8 +30,11 @@ def add_experiment_data_sensivitity(datasensitivity: Experiment_DataSensitivity_
         db.refresh(new_data)
         return new_data
 
+
 @router.put("/{datasensitivity_id}", response_model=Experiment_DataSensitivity)
-def update_experiment_data_sensivitity(datasensitivity_id: int, datasensitivity: Experiment_DataSensitivity__Edit):
+def update_experiment_data_sensivitity(
+    datasensitivity_id: int, datasensitivity: Experiment_DataSensitivity__Edit
+):
     with Session(engine) as db:
         row = db.get(Experiment_DataSensitivity__Base, datasensitivity_id)
         if not row or row.is_deleted:
@@ -40,6 +45,7 @@ def update_experiment_data_sensivitity(datasensitivity_id: int, datasensitivity:
         db.commit()
         db.refresh(row)
         return row
+
 
 @router.delete("/{datasensitivity_id}", response_model=Experiment_DataSensitivity)
 def delete_experiment_(datasensitivity_id: int):
