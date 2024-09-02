@@ -11,7 +11,7 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[Experiment_DataSensitivity])
-def list_experiment_data_sensivitity():
+def list_experiment_data_sensivitities():
     with Session(engine) as db:
         statement = select(Experiment_DataSensitivity__Base).where(
             Experiment_DataSensitivity__Base.is_deleted == 0
@@ -20,10 +20,10 @@ def list_experiment_data_sensivitity():
 
 
 @router.post("/", response_model=Experiment_DataSensitivity)
-def add_experiment_data_sensivitity(datasensitivity: Experiment_DataSensitivity__Edit):
+def add_experiment_data_sensivitity(posted_data: Experiment_DataSensitivity__Edit):
     with Session(engine) as db:
         new_data = Experiment_DataSensitivity__Base()
-        for attribute, value in datasensitivity.__dict__.items():
+        for attribute, value in posted_data.__dict__.items():
             setattr(new_data, attribute, value)
         db.add(new_data)
         db.commit()
@@ -33,14 +33,14 @@ def add_experiment_data_sensivitity(datasensitivity: Experiment_DataSensitivity_
 
 @router.put("/{datasensitivity_id}", response_model=Experiment_DataSensitivity)
 def update_experiment_data_sensivitity(
-    datasensitivity_id: int, datasensitivity: Experiment_DataSensitivity__Edit
+    item_id: int, posted_data: Experiment_DataSensitivity__Edit
 ):
     with Session(engine) as db:
-        row = db.get(Experiment_DataSensitivity__Base, datasensitivity_id)
+        row = db.get(Experiment_DataSensitivity__Base, item_id)
         if not row or row.is_deleted:
-            raise HTTPException(datasensitivity_code=404)
-        datasensitivity_data = datasensitivity.model_dump(exclude_unset=True)
-        row.sqlmodel_update(datasensitivity_data)
+            raise HTTPException(code=404)
+        posted_data_dump = posted_data.model_dump(exclude_unset=True)
+        row.sqlmodel_update(posted_data_dump)
         db.add(row)
         db.commit()
         db.refresh(row)
@@ -48,11 +48,11 @@ def update_experiment_data_sensivitity(
 
 
 @router.delete("/{datasensitivity_id}", response_model=Experiment_DataSensitivity)
-def delete_experiment_(datasensitivity_id: int):
+def delete_experiment_data_sensivitity(item_id: int):
     with Session(engine) as db:
-        row = db.get(Experiment_DataSensitivity__Base, datasensitivity_id)
+        row = db.get(Experiment_DataSensitivity__Base, item_id)
         if not row or row.is_deleted:
-            raise HTTPException(datasensitivity_code=404)
+            raise HTTPException(status_code=404)
         row.is_deleted = 1
         db.add(row)
         db.commit()

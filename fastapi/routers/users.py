@@ -19,13 +19,13 @@ def list_users():
 
 
 @router.post("/", response_model=Users)
-def add_user(user: Users__Edit):
+def add_user(body_data: Users__Edit):
     with Session(engine) as db:
         new_data = Users__Base()
-        for attribute, value in user.__dict__.items():
+        for attribute, value in body_data.__dict__.items():
             setattr(new_data, attribute, value)
 
-        sbda = db.get(Departments__Base, user.sbda)
+        sbda = db.get(Departments__Base, body_data.sbda)
         if not sbda:
             raise HTTPException(status_code=400, detail="invalid sbda")
         db.add(new_data)
@@ -39,18 +39,18 @@ def add_user(user: Users__Edit):
     response_model=Users,
     responses={404: {"description": "Not found"}},
 )
-def update_user(user_id: int, user: Users__Edit):
+def update_user(item_id: int, body_data: Users__Edit):
     with Session(engine) as db:
-        row = db.get(Users__Base, user_id)
+        row = db.get(Users__Base, item_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
 
-        sbda = db.get(Departments__Base, user.sbda)
+        sbda = db.get(Departments__Base, body_data.sbda)
         if not sbda:
-            raise HTTPException(status_code=400, detail="invalid sbda")
+            raise HTTPException(status_code=400, detail="invalid department")
 
-        user_data = user.model_dump(exclude_unset=True)
-        row.sqlmodel_update(user_data)
+        body_data_dump = body_data.model_dump(exclude_unset=True)
+        row.sqlmodel_update(body_data_dump)
         db.add(row)
         db.commit()
         db.refresh(row)
@@ -62,9 +62,9 @@ def update_user(user_id: int, user: Users__Edit):
     response_model=Users,
     responses={404: {"description": "Not found"}},
 )
-def delete_user(user_id: int):
+def delete_user(item_id: int):
     with Session(engine) as db:
-        row = db.get(Users__Base, user_id)
+        row = db.get(Users__Base, item_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

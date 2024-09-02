@@ -24,10 +24,10 @@ def list_departments():
     "/",
     response_model=Departments,
 )
-def add_department(department: Departments__Edit):
+def add_department(body_data: Departments__Edit):
     with Session(engine) as db:
         new_data = Departments__Base()
-        for attribute, value in department.__dict__.items():
+        for attribute, value in body_data.__dict__.items():
             setattr(new_data, attribute, value)
         db.add(new_data)
         db.commit()
@@ -40,13 +40,13 @@ def add_department(department: Departments__Edit):
     response_model=Departments,
     responses={404: {"description": "Not found"}},
 )
-def update_department(department_id: int, department: Departments__Edit):
+def update_department(item_id: int, body_data: Departments__Edit):
     with Session(engine) as db:
-        row = db.get(Departments__Base, department_id)
+        row = db.get(Departments__Base, item_id)
         if not row or row.is_deleted:
-            raise HTTPException(code=404)
-        department_data = department.model_dump(exclude_unset=True)
-        row.sqlmodel_update(department_data)
+            raise HTTPException(status_code=404)
+        body_data_dump = body_data.model_dump(exclude_unset=True)
+        row.sqlmodel_update(body_data_dump)
         db.add(row)
         db.commit()
         db.refresh(row)
@@ -58,11 +58,11 @@ def update_department(department_id: int, department: Departments__Edit):
     response_model=Departments,
     responses={404: {"description": "Not found"}},
 )
-def delete_department(department_id: int):
+def delete_department(item_id: int):
     with Session(engine) as db:
-        row = db.get(Departments__Base, department_id)
+        row = db.get(Departments__Base, item_id)
         if not row or row.is_deleted:
-            raise HTTPException(code=404)
+            raise HTTPException(status_code=404)
         row.is_deleted = 1
         db.add(row)
         db.commit()

@@ -20,10 +20,10 @@ def list_experiment_statuses():
 
 
 @router.post("/", response_model=Experiment_Status)
-def add_experiment_status(status: Experiment_Status__Edit):
+def add_experiment_status(body_data: Experiment_Status__Edit):
     with Session(engine) as db:
         new_data = Experiment_Status__Base()
-        for attribute, value in status.__dict__.items():
+        for attribute, value in body_data.__dict__.items():
             setattr(new_data, attribute, value)
         db.add(new_data)
         db.commit()
@@ -32,27 +32,27 @@ def add_experiment_status(status: Experiment_Status__Edit):
 
 
 @router.put("/{status_id}", response_model=Experiment_Status)
-def update_experiment_status(status_id: int, status: Experiment_Status__Edit):
+def update_experiment_status(item_id: int, body_data: Experiment_Status__Edit):
     with Session(engine) as db:
-        db_status = db.get(Experiment_Status__Base, status_id)
-        if not db_status or db_status.is_deleted or db_status.is_archived:
+        row = db.get(Experiment_Status__Base, item_id)
+        if not row or row.is_deleted:
             raise HTTPException(status_code=404)
-        status_data = status.model_dump(exclude_unset=True)
-        db_status.sqlmodel_update(status_data)
-        db.add(db_status)
+        body_data_dump = body_data.model_dump(exclude_unset=True)
+        row.sqlmodel_update(body_data_dump)
+        db.add(row)
         db.commit()
-        db.refresh(db_status)
-        return db_status
+        db.refresh(row)
+        return row
 
 
 @router.delete("/{status_id}", response_model=Experiment_Status)
-def delete_experiment_status(status_id: int):
+def delete_experiment_status(item_id: int):
     with Session(engine) as db:
-        db_status = db.get(Experiment_Status__Base, status_id)
-        if not db_status or db_status.is_deleted:
+        row = db.get(Experiment_Status__Base, item_id)
+        if not row or row.is_deleted:
             raise HTTPException(status_code=404)
-        db_status.is_deleted = 1
-        db.add(db_status)
+        row.is_deleted = 1
+        db.add(row)
         db.commit()
-        db.refresh(db_status)
-        return db_status
+        db.refresh(row)
+        return row
