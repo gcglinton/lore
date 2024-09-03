@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import Session, select
 
 from db import engine
@@ -77,9 +77,14 @@ def validate_foreign_keys(data):
     "/",
     response_model=list[Experiments],
 )
-def list_experiments():
+def list_experiments(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
-        statement = select(Experiments__Base).where(Experiments__Base.is_deleted == 0)
+        statement = (
+            select(Experiments__Base)
+            .where(Experiments__Base.is_deleted == 0)
+            .offset(offset)
+            .limit(limit)
+        )
         return db.exec(statement).all()
 
 

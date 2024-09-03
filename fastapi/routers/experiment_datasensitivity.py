@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import Session, select
 
 from db import engine
@@ -11,10 +11,15 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[Experiment_DataSensitivity])
-def list_experiment_data_sensivitities():
+def list_experiment_data_sensivitities(
+    offset: int = 0, limit: int = Query(default=100, le=100)
+):
     with Session(engine) as db:
-        statement = select(Experiment_DataSensitivity__Base).where(
-            Experiment_DataSensitivity__Base.is_deleted == 0
+        statement = (
+            select(Experiment_DataSensitivity__Base)
+            .where(Experiment_DataSensitivity__Base.is_deleted == 0)
+            .offset(offset)
+            .limit(limit)
         )
         return db.exec(statement).all()
 

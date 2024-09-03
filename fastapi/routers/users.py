@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import Session, select
 
 from db import engine
@@ -12,9 +12,14 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[Users])
-def list_users():
+def list_users(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
-        statement = select(Users__Base).where(Users__Base.is_deleted == 0)
+        statement = (
+            select(Users__Base)
+            .where(Users__Base.is_deleted == 0)
+            .offset(offset)
+            .limit(limit)
+        )
         return db.exec(statement).all()
 
 
