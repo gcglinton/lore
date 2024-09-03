@@ -202,11 +202,10 @@ Table lessons_learned {
   how_evo_beneficial text
   likely_to_recommend integer
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
     guid
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
@@ -231,10 +230,9 @@ Table canchat_survey {
   feedback text
   comments text
   is_deleted bool [default: 0]
-  is_archived bool [default: 0]
 
   indexes {
-    (is_deleted, is_archived)
+    is_deleted
   }
 }
 
