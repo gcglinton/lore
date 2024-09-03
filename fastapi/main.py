@@ -12,6 +12,7 @@ from routers import experiment_fundingsource
 from routers import experiment_levelofeffort
 from routers import experiment_status
 from routers import experiment_tags
+from routers import experiments
 from routers import users_roles
 from routers import users
 
@@ -23,6 +24,7 @@ app.include_router(experiment_fundingsource.router)
 app.include_router(experiment_levelofeffort.router)
 app.include_router(experiment_status.router)
 app.include_router(experiment_tags.router)
+app.include_router(experiments.router)
 app.include_router(users.router)
 app.include_router(users_roles.router)
 
@@ -88,6 +90,9 @@ admin.add_view(
     ModelView(Cloud_Providers__Base, label="Cloud Providers", name="Cloud Provider")
 )
 
+from db.models import Experiments__Base
+
+admin.add_view(ModelView(Experiments__Base, label="Experiments", name="Exoeriment"))
 
 from db.models import Departments__Base
 
