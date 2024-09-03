@@ -30,47 +30,59 @@ def validate_foreign_keys(data):
     )
 
     with Session(engine) as db:
-        department = db.get(Departments__Base, data.department)
-        if not department:
-            raise HTTPException(status_code=400, detail="invalid department")
+        if data.department:
+            department = db.get(Departments__Base, data.department)
+            if data.department and not department:
+                raise HTTPException(status_code=400, detail="invalid department")
 
-        created_user = db.get(Users__Base, data.created_user)
-        if not created_user:
-            raise HTTPException(status_code=400, detail="invalid user")
+        # created_user = db.get(Users__Base, data.created_user)
+        # if not created_user:
+        #     raise HTTPException(status_code=400, detail="invalid user")
 
-        cloud_provider_requested = db.get(
-            Cloud_Providers__Base, data.cloud_provider_requested
-        )
-        if not cloud_provider_requested:
-            raise HTTPException(status_code=400, detail="invalid cloud provider")
+        if data.cloud_provider_requested:
+            cloud_provider_requested = db.get(
+                Cloud_Providers__Base, data.cloud_provider_requested
+            )
+            if data.cloud_provider_requested and not cloud_provider_requested:
+                raise HTTPException(status_code=400, detail="invalid cloud provider")
 
-        cloud_provider_actual = db.get(
-            Cloud_Providers__Base, data.cloud_provider_actual
-        )
-        if not cloud_provider_actual:
-            raise HTTPException(status_code=400, detail="invalid cloud provider")
+        if data.cloud_provider_actual:
+            cloud_provider_actual = db.get(
+                Cloud_Providers__Base, data.cloud_provider_actual
+            )
+            if not cloud_provider_actual:
+                raise HTTPException(status_code=400, detail="invalid cloud provider")
 
-        status = db.get(Experiment_Status__Base, data.status)
-        if not status:
-            raise HTTPException(status_code=400, detail="invalid status")
+        if data.status:
+            status = db.get(Experiment_Status__Base, data.status)
+            if not status:
+                raise HTTPException(status_code=400, detail="invalid status")
 
-        area_of_science = db.get(Experiment_AreaOfScience__Base, data.area_of_science)
-        if not area_of_science:
-            raise HTTPException(status_code=400, detail="invalid area of science")
+        if data.area_of_science:
+            area_of_science = db.get(
+                Experiment_AreaOfScience__Base, data.area_of_science
+            )
+            if not area_of_science:
+                raise HTTPException(status_code=400, detail="invalid area of science")
 
-        level_of_effort = db.get(Experiment_LevelOfEffort__Base, data.level_of_effort)
-        if not level_of_effort:
-            raise HTTPException(status_code=400, detail="invalid level of effort")
+        if data.level_of_effort:
+            level_of_effort = db.get(
+                Experiment_LevelOfEffort__Base, data.level_of_effort
+            )
+            if not level_of_effort:
+                raise HTTPException(status_code=400, detail="invalid level of effort")
 
-        funding_source = db.get(Experiment_FundingSource__Base, data.funding_source)
-        if not funding_source:
-            raise HTTPException(status_code=400, detail="invalid funding source")
+        if data.funding_source:
+            funding_source = db.get(Experiment_FundingSource__Base, data.funding_source)
+            if not funding_source:
+                raise HTTPException(status_code=400, detail="invalid funding source")
 
-        data_sensivitity = db.get(
-            Experiment_DataSensitivity__Base, data.data_sensivitity
-        )
-        if not data_sensivitity:
-            raise HTTPException(status_code=400, detail="invalid data sensitivity")
+        if data.data_sensivitity:
+            data_sensivitity = db.get(
+                Experiment_DataSensitivity__Base, data.data_sensivitity
+            )
+            if not data_sensivitity:
+                raise HTTPException(status_code=400, detail="invalid data sensitivity")
 
 
 @router.get(
