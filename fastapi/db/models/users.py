@@ -3,6 +3,10 @@ from typing import Optional
 from sqlmodel import Field, SQLModel
 from sqlmodel import Column, TEXT
 
+from sqlalchemy import DateTime, func
+
+import datetime
+
 
 class Users__Base(SQLModel, table=True):
     __tablename__ = "users"
@@ -12,7 +16,10 @@ class Users__Base(SQLModel, table=True):
     name_last: str
     email: Optional[str]
     phone: Optional[str]
-    sbda: int = Field(foreign_key="departments.id")
+    department: int = Field(foreign_key="departments.id")
+    created_at: datetime.datetime = Field(
+        default_factory=datetime.datetime.now,
+    )
     # created_at: datetime.datetime = Field(
     #     sa_column_kwargs={
     #         "server_default": text("CURRENT_TIMESTAMP"),
@@ -30,7 +37,7 @@ class Users(SQLModel):
     name_last: str
     email: str
     phone: str
-    sbda: int
+    department: int
     # created_at: float
     notes: str
     is_legoteam: bool
@@ -42,6 +49,6 @@ class Users__Edit(SQLModel):
     name_last: Optional[str]
     email: str
     phone: Optional[str]
-    sbda: int
+    department: int
     notes: Optional[str]
     is_legoteam: Optional[bool]
