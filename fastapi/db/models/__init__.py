@@ -1,3 +1,4 @@
+from .cloud_providers import *
 from .departments import *
 from .experiment_areaofscience import *
 from .experiment_datasensitivity import *
@@ -5,4 +6,9 @@ from .experiment_fundingsource import *
 from .experiment_levelofeffort import *
 from .experiment_status import *
 from .experiment_tags import *
+from .experiments import *
+from .link_experiments_related import *
+from .link_experiments_tags import *
+from .link_experiments_users import *
 from .users import *
+from .users_roles import *

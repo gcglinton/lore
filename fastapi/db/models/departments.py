@@ -44,7 +44,6 @@ class Departments(SQLModel):
     sdm_email: str
     description: str
     is_science: bool
-    is_deleted: bool
 
 
 class Departments__Edit(SQLModel):
