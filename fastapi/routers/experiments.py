@@ -118,6 +118,18 @@ def add_experiment(body_data: Experiments__Edit):
         return new_data
 
 
+@router.get(
+    "/{experiment_id}",
+    response_model=Experiments,
+)
+def get_an_experiment(experiment_id: int):
+    with Session(engine) as db:
+        row = db.get(Experiments__Base, experiment_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.patch(
     "/{experiment_id}/archive",
     response_model=Experiments,

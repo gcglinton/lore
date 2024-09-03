@@ -24,6 +24,18 @@ def list_experiment_data_sensivitities(
         return db.exec(statement).all()
 
 
+@router.get(
+    "/{datasensitivity_id}",
+    response_model=Experiment_DataSensitivity,
+)
+def get_one_experiment_area_of_science(datasensitivity_id: int):
+    with Session(engine) as db:
+        row = db.get(Experiment_DataSensitivity__Base, datasensitivity_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.post("/", response_model=Experiment_DataSensitivity)
 def add_experiment_data_sensivitity(posted_data: Experiment_DataSensitivity__Edit):
     with Session(engine) as db:

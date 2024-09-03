@@ -24,6 +24,18 @@ def list_experiment_funding_sources(
         return db.exec(statement).all()
 
 
+@router.get(
+    "/{fundingsource_id}",
+    response_model=Experiment_FundingSource,
+)
+def get_one_experiment_funding_source(fundingsource_id: int):
+    with Session(engine) as db:
+        row = db.get(Experiment_FundingSource__Base, fundingsource_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.post("/", response_model=Experiment_FundingSource)
 def add_experiment_funding_source(posted_data: Experiment_FundingSource__Edit):
     with Session(engine) as db:

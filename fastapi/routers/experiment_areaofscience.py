@@ -24,6 +24,18 @@ def list_experiment_areas_of_science(
         return db.exec(statement).all()
 
 
+@router.get(
+    "/{areaofscience_id}",
+    response_model=Experiment_AreaOfScience,
+)
+def get_one_experiment_area_of_science(areaofscience_id: int):
+    with Session(engine) as db:
+        row = db.get(Experiment_AreaOfScience__Base, areaofscience_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.post("/", response_model=Experiment_AreaOfScience)
 def add_experiment_area_of_science(body_data: Experiment_AreaOfScience__Edit):
     with Session(engine) as db:

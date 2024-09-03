@@ -22,6 +22,18 @@ def list_user_roles(offset: int = 0, limit: int = Query(default=100, le=100)):
         return db.exec(statement).all()
 
 
+@router.get(
+    "/{role_id}",
+    response_model=Users_Roles,
+)
+def get_one_user_role(role_id: int):
+    with Session(engine) as db:
+        row = db.get(Users_Roles__Base, role_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.post("/", response_model=Users_Roles)
 def add_user_role(body_data: Users_Roles__Edit):
     with Session(engine) as db:

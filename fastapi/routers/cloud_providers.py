@@ -25,6 +25,18 @@ def list_cloud_providers(offset: int = 0, limit: int = Query(default=100, le=100
         return db.exec(statement).all()
 
 
+@router.get(
+    "/{cloudprovider_id}",
+    response_model=Cloud_Providers,
+)
+def get_one_cloud_provider(cloudprovider_id: int):
+    with Session(engine) as db:
+        row = db.get(Cloud_Providers__Base, cloudprovider_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.post(
     "/",
     response_model=Cloud_Providers,

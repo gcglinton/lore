@@ -23,6 +23,18 @@ def list_users(offset: int = 0, limit: int = Query(default=100, le=100)):
         return db.exec(statement).all()
 
 
+@router.get(
+    "/{user_id}",
+    response_model=Users,
+)
+def get_one_user(user_id: int):
+    with Session(engine) as db:
+        row = db.get(Users__Base, user_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.post("/", response_model=Users)
 def add_user(body_data: Users__Edit):
     with Session(engine) as db:

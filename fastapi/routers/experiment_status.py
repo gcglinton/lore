@@ -22,6 +22,18 @@ def list_experiment_statuses(offset: int = 0, limit: int = Query(default=100, le
         return db.exec(statement).all()
 
 
+@router.get(
+    "/{status_id}",
+    response_model=Experiment_Status,
+)
+def get_one_experiment_status(status_id: int):
+    with Session(engine) as db:
+        row = db.get(Experiment_Status__Base, status_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.post("/", response_model=Experiment_Status)
 def add_experiment_status(body_data: Experiment_Status__Edit):
     with Session(engine) as db:

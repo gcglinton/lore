@@ -24,6 +24,18 @@ def list_experiment_levels_of_efforts(
         return db.exec(statement).all()
 
 
+@router.get(
+    "/{levelofeffort_id}",
+    response_model=Experiment_LevelOfEffort,
+)
+def get_one_experiment_level_of_effort(levelofeffort_id: int):
+    with Session(engine) as db:
+        row = db.get(Experiment_LevelOfEffort__Base, levelofeffort_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.post("/", response_model=Experiment_LevelOfEffort)
 def add_experiment_level_of_effort(body_data: Experiment_LevelOfEffort__Edit):
     with Session(engine) as db:
@@ -37,7 +49,7 @@ def add_experiment_level_of_effort(body_data: Experiment_LevelOfEffort__Edit):
 
 
 @router.put(
-    "/levelofeffort/{levelofeffort_id}",
+    "/{levelofeffort_id}",
     response_model=Experiment_LevelOfEffort,
     responses={404: {"description": "Not found"}},
 )

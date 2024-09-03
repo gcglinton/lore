@@ -25,6 +25,18 @@ def list_departments(offset: int = 0, limit: int = Query(default=100, le=100)):
         return db.exec(statement).all()
 
 
+@router.get(
+    "/{department_id}",
+    response_model=Departments,
+)
+def get_one_department(department_id: int):
+    with Session(engine) as db:
+        row = db.get(Departments__Base, department_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.post(
     "/",
     response_model=Departments,

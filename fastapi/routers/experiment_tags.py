@@ -22,6 +22,18 @@ def list_experiment_tags(offset: int = 0, limit: int = Query(default=100, le=100
         return db.exec(statement).all()
 
 
+@router.get(
+    "/{tag_id}",
+    response_model=Experiment_Tags,
+)
+def get_one_experiment_tag(tag_id: int):
+    with Session(engine) as db:
+        row = db.get(Experiment_Tags__Base, tag_id)
+        if not row or row.is_deleted:
+            raise HTTPException(status_code=404)
+        return row
+
+
 @router.post("/", response_model=Experiment_Tags)
 def add_experiment_tag(body_data: Experiment_Tags__Edit):
     with Session(engine) as db:
