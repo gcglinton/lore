@@ -42,8 +42,8 @@ def add_user(body_data: Users__Edit):
         for attribute, value in body_data.__dict__.items():
             setattr(new_data, attribute, value)
 
-        sbda = db.get(Departments__Base, body_data.sbda)
-        if not sbda:
+        department = db.get(Departments__Base, body_data.department)
+        if not department:
             raise HTTPException(status_code=400, detail="invalid sbda")
         db.add(new_data)
         db.commit()
