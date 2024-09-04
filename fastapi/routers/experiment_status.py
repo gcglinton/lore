@@ -47,9 +47,9 @@ def add_experiment_status(body_data: Experiment_Status__Edit):
 
 
 @router.put("/{status_id}", response_model=Experiment_Status)
-def update_experiment_status(item_id: int, body_data: Experiment_Status__Edit):
+def update_experiment_status(status_id: int, body_data: Experiment_Status__Edit):
     with Session(engine) as db:
-        row = db.get(Experiment_Status__Base, item_id)
+        row = db.get(Experiment_Status__Base, status_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -61,9 +61,9 @@ def update_experiment_status(item_id: int, body_data: Experiment_Status__Edit):
 
 
 @router.delete("/{status_id}", response_model=Experiment_Status)
-def delete_experiment_status(item_id: int):
+def delete_experiment_status(status_id: int):
     with Session(engine) as db:
-        row = db.get(Experiment_Status__Base, item_id)
+        row = db.get(Experiment_Status__Base, status_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

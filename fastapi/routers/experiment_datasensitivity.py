@@ -50,10 +50,10 @@ def add_experiment_data_sensivitity(posted_data: Experiment_DataSensitivity__Edi
 
 @router.put("/{datasensitivity_id}", response_model=Experiment_DataSensitivity)
 def update_experiment_data_sensivitity(
-    item_id: int, posted_data: Experiment_DataSensitivity__Edit
+    datasensitivity_id: int, posted_data: Experiment_DataSensitivity__Edit
 ):
     with Session(engine) as db:
-        row = db.get(Experiment_DataSensitivity__Base, item_id)
+        row = db.get(Experiment_DataSensitivity__Base, datasensitivity_id)
         if not row or row.is_deleted:
             raise HTTPException(code=404)
         posted_data_dump = posted_data.model_dump(exclude_unset=True)
@@ -65,9 +65,9 @@ def update_experiment_data_sensivitity(
 
 
 @router.delete("/{datasensitivity_id}", response_model=Experiment_DataSensitivity)
-def delete_experiment_data_sensivitity(item_id: int):
+def delete_experiment_data_sensivitity(datasensitivity_id: int):
     with Session(engine) as db:
-        row = db.get(Experiment_DataSensitivity__Base, item_id)
+        row = db.get(Experiment_DataSensitivity__Base, datasensitivity_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

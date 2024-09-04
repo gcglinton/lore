@@ -57,9 +57,9 @@ def add_cloud_provider(body_data: Cloud_Providers__Edit):
     response_model=Cloud_Providers,
     responses={404: {"description": "Not found"}},
 )
-def update_cloud_provider(item_id: int, body_data: Cloud_Providers__Edit):
+def update_cloud_provider(cloudprovider_id: int, body_data: Cloud_Providers__Edit):
     with Session(engine) as db:
-        row = db.get(Cloud_Providers__Base, item_id)
+        row = db.get(Cloud_Providers__Base, cloudprovider_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -75,9 +75,9 @@ def update_cloud_provider(item_id: int, body_data: Cloud_Providers__Edit):
     response_model=Cloud_Providers,
     responses={404: {"description": "Not found"}},
 )
-def delete_cloud_provider(item_id: int):
+def delete_cloud_provider(cloudprovider_id: int):
     with Session(engine) as db:
-        row = db.get(Cloud_Providers__Base, item_id)
+        row = db.get(Cloud_Providers__Base, cloudprovider_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

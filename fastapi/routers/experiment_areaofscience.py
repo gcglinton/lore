@@ -50,10 +50,10 @@ def add_experiment_area_of_science(body_data: Experiment_AreaOfScience__Edit):
 
 @router.put("/{areaofscience_id}", response_model=Experiment_AreaOfScience)
 def update_experiment_area_of_science(
-    item_id: int, body_data: Experiment_AreaOfScience__Edit
+    areaofscience_id: int, body_data: Experiment_AreaOfScience__Edit
 ):
     with Session(engine) as db:
-        row = db.get(Experiment_AreaOfScience__Base, item_id)
+        row = db.get(Experiment_AreaOfScience__Base, areaofscience_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -65,9 +65,9 @@ def update_experiment_area_of_science(
 
 
 @router.delete("/{areaofscience_id}", response_model=Experiment_AreaOfScience)
-def delete_experiment_area_of_science(item_id: int):
+def delete_experiment_area_of_science(areaofscience_id: int):
     with Session(engine) as db:
-        row = db.get(Experiment_AreaOfScience__Base, item_id)
+        row = db.get(Experiment_AreaOfScience__Base, areaofscience_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

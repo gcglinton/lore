@@ -56,14 +56,14 @@ def add_user(body_data: Users__Edit):
     response_model=Users,
     responses={404: {"description": "Not found"}},
 )
-def update_user(item_id: int, body_data: Users__Edit):
+def update_user(user_id: int, body_data: Users__Edit):
     with Session(engine) as db:
-        row = db.get(Users__Base, item_id)
+        row = db.get(Users__Base, user_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
 
-        sbda = db.get(Departments__Base, body_data.sbda)
-        if not sbda:
+        department = db.get(Departments__Base, body_data.department)
+        if not department:
             raise HTTPException(status_code=400, detail="invalid department")
 
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -79,9 +79,9 @@ def update_user(item_id: int, body_data: Users__Edit):
     response_model=Users,
     responses={404: {"description": "Not found"}},
 )
-def delete_user(item_id: int):
+def delete_user(user_id: int):
     with Session(engine) as db:
-        row = db.get(Users__Base, item_id)
+        row = db.get(Users__Base, user_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

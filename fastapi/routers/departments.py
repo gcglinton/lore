@@ -57,9 +57,9 @@ def add_department(body_data: Departments__Edit):
     response_model=Departments,
     responses={404: {"description": "Not found"}},
 )
-def update_department(item_id: int, body_data: Departments__Edit):
+def update_department(department_id: int, body_data: Departments__Edit):
     with Session(engine) as db:
-        row = db.get(Departments__Base, item_id)
+        row = db.get(Departments__Base, department_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -75,9 +75,9 @@ def update_department(item_id: int, body_data: Departments__Edit):
     response_model=Departments,
     responses={404: {"description": "Not found"}},
 )
-def delete_department(item_id: int):
+def delete_department(department_id: int):
     with Session(engine) as db:
-        row = db.get(Departments__Base, item_id)
+        row = db.get(Departments__Base, department_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

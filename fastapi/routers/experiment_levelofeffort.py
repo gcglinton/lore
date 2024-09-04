@@ -54,10 +54,10 @@ def add_experiment_level_of_effort(body_data: Experiment_LevelOfEffort__Edit):
     responses={404: {"description": "Not found"}},
 )
 def update_experiment_level_of_effort(
-    item_id: int, body_data: Experiment_LevelOfEffort__Edit
+    levelofeffort_id: int, body_data: Experiment_LevelOfEffort__Edit
 ):
     with Session(engine) as db:
-        row = db.get(Experiment_LevelOfEffort__Base, item_id)
+        row = db.get(Experiment_LevelOfEffort__Base, levelofeffort_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -73,9 +73,9 @@ def update_experiment_level_of_effort(
     response_model=Experiment_LevelOfEffort,
     responses={404: {"description": "Not found"}},
 )
-def delete_experiment_level_of_effort(item_id: int):
+def delete_experiment_level_of_effort(levelofeffort_id: int):
     with Session(engine) as db:
-        row = db.get(Experiment_LevelOfEffort__Base, item_id)
+        row = db.get(Experiment_LevelOfEffort__Base, levelofeffort_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

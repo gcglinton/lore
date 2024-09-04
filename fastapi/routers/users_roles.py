@@ -47,9 +47,9 @@ def add_user_role(body_data: Users_Roles__Edit):
 
 
 @router.put("/{role_id}", response_model=Users_Roles)
-def update_user_role(item_id: int, body_data: Users_Roles__Edit):
+def update_user_role(role_id: int, body_data: Users_Roles__Edit):
     with Session(engine) as db:
-        row = db.get(Users_Roles__Base, item_id)
+        row = db.get(Users_Roles__Base, role_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -61,9 +61,9 @@ def update_user_role(item_id: int, body_data: Users_Roles__Edit):
 
 
 @router.delete("/{role_id}", response_model=Users_Roles)
-def delete_user_role(item_id: int):
+def delete_user_role(role_id: int):
     with Session(engine) as db:
-        row = db.get(Users_Roles__Base, item_id)
+        row = db.get(Users_Roles__Base, role_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

@@ -50,10 +50,10 @@ def add_experiment_funding_source(posted_data: Experiment_FundingSource__Edit):
 
 @router.put("/{fundingsource_id}", response_model=Experiment_FundingSource)
 def update_experiment_funding_source(
-    item_id: int, posted_data: Experiment_FundingSource__Edit
+    fundingsource_id: int, posted_data: Experiment_FundingSource__Edit
 ):
     with Session(engine) as db:
-        row = db.get(Experiment_FundingSource__Base, item_id)
+        row = db.get(Experiment_FundingSource__Base, fundingsource_id)
         if not row or row.is_deleted:
             raise HTTPException(code=404)
         posted_data_dump = posted_data.model_dump(exclude_unset=True)
@@ -65,9 +65,9 @@ def update_experiment_funding_source(
 
 
 @router.delete("/{fundingsource_id}", response_model=Experiment_FundingSource)
-def delete_experiment_funding_sourcey(item_id: int):
+def delete_experiment_funding_sourcey(fundingsource_id: int):
     with Session(engine) as db:
-        row = db.get(Experiment_FundingSource__Base, item_id)
+        row = db.get(Experiment_FundingSource__Base, fundingsource_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

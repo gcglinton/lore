@@ -135,9 +135,9 @@ def get_an_experiment(experiment_id: int):
     response_model=Experiments,
     responses={404: {"description": "Not found"}},
 )
-def archive_experiment(item_id: int):
+def archive_experiment(experiment_id: int):
     with Session(engine) as db:
-        row = db.get(Experiments__Base, item_id)
+        row = db.get(Experiments__Base, experiment_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_archived = 1
@@ -148,15 +148,15 @@ def archive_experiment(item_id: int):
 
 
 @router.patch(
-    "/{experiment_id}/tag/{tag_id}",
+    "/{experiment_id}/tags/{tag_id}",
     response_model=Link__Experiments_Tags,
     responses={404: {"description": "Not found"}},
 )
-def tag_experiment(item_id: int, tag_id: int):
+def tag_experiment(experiment_id: int, tag_id: int):
     from db.models import Experiment_Tags__Base
 
     with Session(engine) as db:
-        experiment = db.get(Experiments__Base, item_id)
+        experiment = db.get(Experiments__Base, experiment_id)
         if not experiment or experiment.is_deleted:
             raise HTTPException(status_code=404)
 
@@ -165,7 +165,7 @@ def tag_experiment(item_id: int, tag_id: int):
             raise HTTPException(status_code=400, detail="invalid tag")
 
         row = Link__Experiments_Tags()
-        row.experiment_id = item_id
+        row.experiment_id = experiment_id
         row.tag_id = tag_id
         db.add(row)
         db.commit()
@@ -173,16 +173,16 @@ def tag_experiment(item_id: int, tag_id: int):
         return row
 
 
-@router.patch(
-    "/{experiment_id}/user/{user_id}/role/{role_id}",
-    response_model=Link__Experiments_Tags,
+@router.get(
+    "/{experiment_id}/users",
+    response_model=list[Experiments_Users],
     responses={404: {"description": "Not found"}},
 )
-def tag_experiment(item_id: int, user_id: int, role_id: int):
+def list_experiment_users(experiment_id: int):
     from db.models import Users__Base, Users_Roles__Base
 
     with Session(engine) as db:
-        experiment = db.get(Experiments__Base, item_id)
+        experiment = db.get(Experiments__Base, experiment_id)
         if not experiment or experiment.is_deleted:
             raise HTTPException(status_code=404)
 
@@ -209,9 +209,9 @@ def tag_experiment(item_id: int, user_id: int, role_id: int):
     response_model=Link__Experiments_Related,
     responses={404: {"description": "Not found"}},
 )
-def tag_experiment(item_id: int, related_id: int):
+def relate_an_experiment(experiment_id: int, related_id: int, response: Response):
     with Session(engine) as db:
-        experiment = db.get(Experiments__Base, item_id)
+        experiment = db.get(Experiments__Base, experiment_id)
         if not experiment or experiment.is_deleted:
             raise HTTPException(status_code=404)
 
@@ -219,8 +219,8 @@ def tag_experiment(item_id: int, related_id: int):
         if not experiment_related or experiment_related.is_deleted:
             raise HTTPException(status_code=404)
 
-        row = Link__Experiments_Related
-        row.experiment_1 = item_id
+        row = Link__Experiments_Related()
+        row.experiment_1 = experiment_id
         row.experiment_2 = related_id
         db.add(row)
         db.commit()
@@ -234,9 +234,9 @@ def tag_experiment(item_id: int, related_id: int):
     response_model=Experiments,
     responses={404: {"description": "Not found"}},
 )
-def update_update(item_id: int, body_data: Experiments__Edit):
+def update_experiment(experiment_id: int, body_data: Experiments__Edit):
     with Session(engine) as db:
-        row = db.get(Experiments__Base, item_id)
+        row = db.get(Experiments__Base, experiment_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
 
@@ -255,9 +255,9 @@ def update_update(item_id: int, body_data: Experiments__Edit):
     response_model=Experiments,
     responses={404: {"description": "Not found"}},
 )
-def delete_experiment(item_id: int):
+def delete_experiment(experiment_id: int):
     with Session(engine) as db:
-        row = db.get(Experiments__Base, item_id)
+        row = db.get(Experiments__Base, experiment_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1
