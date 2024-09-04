@@ -322,7 +322,7 @@ def upgrade() -> None:
             ["user_id"],
             ["users.id"],
         ),
-        sa.PrimaryKeyConstraint("experiment_id", "user_id"),
+        sa.PrimaryKeyConstraint("experiment_id", "user_id", "role_id"),
     )
     # ### end Alembic commands ###
 

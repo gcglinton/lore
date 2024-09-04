@@ -13,6 +13,9 @@ from routers import experiment_levelofeffort
 from routers import experiment_status
 from routers import experiment_tags
 from routers import experiments
+from routers import experiments__related
+from routers import experiments__tags
+from routers import experiments__users
 from routers import users_roles
 from routers import users
 
@@ -25,14 +28,21 @@ app.include_router(experiment_levelofeffort.router)
 app.include_router(experiment_status.router)
 app.include_router(experiment_tags.router)
 app.include_router(experiments.router)
+app.include_router(experiments__related.router)
+app.include_router(experiments__tags.router)
+app.include_router(experiments__users.router)
 app.include_router(users.router)
 app.include_router(users_roles.router)
+
+
+# -----------------------------------------------------------
+#                        ADMIN
+# -----------------------------------------------------------
 
 # from starlette.applications import Starlette
 from starlette_admin.contrib.sqla import Admin, ModelView
 
 admin = Admin(engine, title="LORE")
-
 
 from db.models import Experiment_AreaOfScience__Base
 
