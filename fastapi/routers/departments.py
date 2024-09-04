@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response, status
 from sqlmodel import Session, select
 
 from db import engine
@@ -28,6 +28,7 @@ def list_departments(offset: int = 0, limit: int = Query(default=100, le=100)):
 @router.get(
     "/{department_id}",
     response_model=Departments,
+    responses={404: {"description": "Not found"}},
 )
 def get_one_department(department_id: int):
     with Session(engine) as db:
@@ -37,11 +38,8 @@ def get_one_department(department_id: int):
         return row
 
 
-@router.post(
-    "/",
-    response_model=Departments,
-)
-def add_department(body_data: Departments__Edit):
+@router.post("/", response_model=Departments, status_code=201)
+def add_department(body_data: Departments__Edit, response: Response):
     with Session(engine) as db:
         new_data = Departments__Base()
         for attribute, value in body_data.__dict__.items():
@@ -49,6 +47,8 @@ def add_department(body_data: Departments__Edit):
         db.add(new_data)
         db.commit()
         db.refresh(new_data)
+
+        response.status_code = status.HTTP_201_CREATED
         return new_data
 
 
@@ -72,8 +72,8 @@ def update_department(department_id: int, body_data: Departments__Edit):
 
 @router.delete(
     "/{department_id}",
-    response_model=Departments,
     responses={404: {"description": "Not found"}},
+    status_code=204,
 )
 def delete_department(department_id: int):
     with Session(engine) as db:
@@ -84,4 +84,3 @@ def delete_department(department_id: int):
         db.add(row)
         db.commit()
         db.refresh(row)
-        return row

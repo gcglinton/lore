@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response, status
 from sqlmodel import Session, select
 
 from db import engine
@@ -27,6 +27,7 @@ def list_experiment_levels_of_efforts(
 @router.get(
     "/{levelofeffort_id}",
     response_model=Experiment_LevelOfEffort,
+    responses={404: {"description": "Not found"}},
 )
 def get_one_experiment_level_of_effort(levelofeffort_id: int):
     with Session(engine) as db:
@@ -36,8 +37,10 @@ def get_one_experiment_level_of_effort(levelofeffort_id: int):
         return row
 
 
-@router.post("/", response_model=Experiment_LevelOfEffort)
-def add_experiment_level_of_effort(body_data: Experiment_LevelOfEffort__Edit):
+@router.post("/", response_model=Experiment_LevelOfEffort, status_code=201)
+def add_experiment_level_of_effort(
+    body_data: Experiment_LevelOfEffort__Edit, response: Response
+):
     with Session(engine) as db:
         new_data = Experiment_LevelOfEffort__Base()
         for attribute, value in body_data.__dict__.items():
@@ -45,6 +48,8 @@ def add_experiment_level_of_effort(body_data: Experiment_LevelOfEffort__Edit):
         db.add(new_data)
         db.commit()
         db.refresh(new_data)
+
+        response.status_code = status.HTTP_201_CREATED
         return new_data
 
 
@@ -70,8 +75,8 @@ def update_experiment_level_of_effort(
 
 @router.delete(
     "/{levelofeffort_id}",
-    response_model=Experiment_LevelOfEffort,
     responses={404: {"description": "Not found"}},
+    status_code=204,
 )
 def delete_experiment_level_of_effort(levelofeffort_id: int):
     with Session(engine) as db:
@@ -82,4 +87,3 @@ def delete_experiment_level_of_effort(levelofeffort_id: int):
         db.add(row)
         db.commit()
         db.refresh(row)
-        return row

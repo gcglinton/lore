@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response, status
 from sqlmodel import Session, select
 
 from db import engine
@@ -28,6 +28,7 @@ def list_cloud_providers(offset: int = 0, limit: int = Query(default=100, le=100
 @router.get(
     "/{cloudprovider_id}",
     response_model=Cloud_Providers,
+    responses={404: {"description": "Not found"}},
 )
 def get_one_cloud_provider(cloudprovider_id: int):
     with Session(engine) as db:
@@ -37,11 +38,8 @@ def get_one_cloud_provider(cloudprovider_id: int):
         return row
 
 
-@router.post(
-    "/",
-    response_model=Cloud_Providers,
-)
-def add_cloud_provider(body_data: Cloud_Providers__Edit):
+@router.post("/", response_model=Cloud_Providers, status_code=201)
+def add_cloud_provider(body_data: Cloud_Providers__Edit, response: Response):
     with Session(engine) as db:
         new_data = Cloud_Providers__Base()
         for attribute, value in body_data.__dict__.items():
@@ -49,6 +47,8 @@ def add_cloud_provider(body_data: Cloud_Providers__Edit):
         db.add(new_data)
         db.commit()
         db.refresh(new_data)
+
+        response.status_code = status.HTTP_201_CREATED
         return new_data
 
 
@@ -72,8 +72,8 @@ def update_cloud_provider(cloudprovider_id: int, body_data: Cloud_Providers__Edi
 
 @router.delete(
     "/{cloudprovider_id}",
-    response_model=Cloud_Providers,
     responses={404: {"description": "Not found"}},
+    status_code=204,
 )
 def delete_cloud_provider(cloudprovider_id: int):
     with Session(engine) as db:
@@ -84,4 +84,3 @@ def delete_cloud_provider(cloudprovider_id: int):
         db.add(row)
         db.commit()
         db.refresh(row)
-        return row

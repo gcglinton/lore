@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response, status
 from sqlmodel import Session, select
 
 from db import engine
@@ -26,6 +26,7 @@ def list_users(offset: int = 0, limit: int = Query(default=100, le=100)):
 @router.get(
     "/{user_id}",
     response_model=Users,
+    responses={404: {"description": "Not found"}},
 )
 def get_one_user(user_id: int):
     with Session(engine) as db:
@@ -35,8 +36,13 @@ def get_one_user(user_id: int):
         return row
 
 
-@router.post("/", response_model=Users)
-def add_user(body_data: Users__Edit):
+@router.post(
+    "/",
+    response_model=Users,
+    responses={400: {"description": "invalid references"}},
+    status_code=201,
+)
+def add_user(body_data: Users__Edit, response: Response):
     with Session(engine) as db:
         new_data = Users__Base()
         for attribute, value in body_data.__dict__.items():
@@ -44,10 +50,12 @@ def add_user(body_data: Users__Edit):
 
         department = db.get(Departments__Base, body_data.department)
         if not department:
-            raise HTTPException(status_code=400, detail="invalid sbda")
+            raise HTTPException(status_code=400, detail="invalid department")
         db.add(new_data)
         db.commit()
         db.refresh(new_data)
+
+        response.status_code = status.HTTP_201_CREATED
         return new_data
 
 
@@ -76,8 +84,8 @@ def update_user(user_id: int, body_data: Users__Edit):
 
 @router.delete(
     "/{user_id}",
-    response_model=Users,
     responses={404: {"description": "Not found"}},
+    status_code=204,
 )
 def delete_user(user_id: int):
     with Session(engine) as db:
@@ -88,4 +96,3 @@ def delete_user(user_id: int):
         db.add(row)
         db.commit()
         db.refresh(row)
-        return row

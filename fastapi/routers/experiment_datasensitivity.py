@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response, status
 from sqlmodel import Session, select
 
 from db import engine
@@ -27,6 +27,7 @@ def list_experiment_data_sensivitities(
 @router.get(
     "/{datasensitivity_id}",
     response_model=Experiment_DataSensitivity,
+    responses={404: {"description": "Not found"}},
 )
 def get_one_experiment_area_of_science(datasensitivity_id: int):
     with Session(engine) as db:
@@ -36,8 +37,10 @@ def get_one_experiment_area_of_science(datasensitivity_id: int):
         return row
 
 
-@router.post("/", response_model=Experiment_DataSensitivity)
-def add_experiment_data_sensivitity(posted_data: Experiment_DataSensitivity__Edit):
+@router.post("/", response_model=Experiment_DataSensitivity, status_code=201)
+def add_experiment_data_sensivitity(
+    posted_data: Experiment_DataSensitivity__Edit, response: Response
+):
     with Session(engine) as db:
         new_data = Experiment_DataSensitivity__Base()
         for attribute, value in posted_data.__dict__.items():
@@ -45,6 +48,8 @@ def add_experiment_data_sensivitity(posted_data: Experiment_DataSensitivity__Edi
         db.add(new_data)
         db.commit()
         db.refresh(new_data)
+
+        response.status_code = status.HTTP_201_CREATED
         return new_data
 
 
@@ -64,7 +69,11 @@ def update_experiment_data_sensivitity(
         return row
 
 
-@router.delete("/{datasensitivity_id}", response_model=Experiment_DataSensitivity)
+@router.delete(
+    "/{datasensitivity_id}",
+    responses={404: {"description": "Not found"}},
+    status_code=204,
+)
 def delete_experiment_data_sensivitity(datasensitivity_id: int):
     with Session(engine) as db:
         row = db.get(Experiment_DataSensitivity__Base, datasensitivity_id)
@@ -74,4 +83,3 @@ def delete_experiment_data_sensivitity(datasensitivity_id: int):
         db.add(row)
         db.commit()
         db.refresh(row)
-        return row

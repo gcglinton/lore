@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response, status
 from sqlmodel import Session, select
 
 from db import engine
@@ -27,6 +27,7 @@ def list_experiment_areas_of_science(
 @router.get(
     "/{areaofscience_id}",
     response_model=Experiment_AreaOfScience,
+    responses={404: {"description": "Not found"}},
 )
 def get_one_experiment_area_of_science(areaofscience_id: int):
     with Session(engine) as db:
@@ -36,8 +37,10 @@ def get_one_experiment_area_of_science(areaofscience_id: int):
         return row
 
 
-@router.post("/", response_model=Experiment_AreaOfScience)
-def add_experiment_area_of_science(body_data: Experiment_AreaOfScience__Edit):
+@router.post("/", response_model=Experiment_AreaOfScience, status_code=201)
+def add_experiment_area_of_science(
+    body_data: Experiment_AreaOfScience__Edit, response: Response
+):
     with Session(engine) as db:
         new_data = Experiment_AreaOfScience__Base()
         for attribute, value in body_data.__dict__.items():
@@ -45,6 +48,8 @@ def add_experiment_area_of_science(body_data: Experiment_AreaOfScience__Edit):
         db.add(new_data)
         db.commit()
         db.refresh(new_data)
+
+        response.status_code = status.HTTP_201_CREATED
         return new_data
 
 
@@ -64,7 +69,11 @@ def update_experiment_area_of_science(
         return row
 
 
-@router.delete("/{areaofscience_id}", response_model=Experiment_AreaOfScience)
+@router.delete(
+    "/{areaofscience_id}",
+    responses={404: {"description": "Not found"}},
+    status_code=204,
+)
 def delete_experiment_area_of_science(areaofscience_id: int):
     with Session(engine) as db:
         row = db.get(Experiment_AreaOfScience__Base, areaofscience_id)
@@ -74,4 +83,3 @@ def delete_experiment_area_of_science(areaofscience_id: int):
         db.add(row)
         db.commit()
         db.refresh(row)
-        return row

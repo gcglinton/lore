@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response, status
 from sqlmodel import Session, select
 
 from db import engine
@@ -25,6 +25,7 @@ def list_experiment_tags(offset: int = 0, limit: int = Query(default=100, le=100
 @router.get(
     "/{tag_id}",
     response_model=Experiment_Tags,
+    responses={404: {"description": "Not found"}},
 )
 def get_one_experiment_tag(tag_id: int):
     with Session(engine) as db:
@@ -34,8 +35,8 @@ def get_one_experiment_tag(tag_id: int):
         return row
 
 
-@router.post("/", response_model=Experiment_Tags)
-def add_experiment_tag(body_data: Experiment_Tags__Edit):
+@router.post("/", response_model=Experiment_Tags, status_code=201)
+def add_experiment_tag(body_data: Experiment_Tags__Edit, response: Response):
     with Session(engine) as db:
         new_data = Experiment_Tags__Base()
         for attribute, value in body_data.__dict__.items():
@@ -43,6 +44,8 @@ def add_experiment_tag(body_data: Experiment_Tags__Edit):
         db.add(new_data)
         db.commit()
         db.refresh(new_data)
+
+        response.status_code = status.HTTP_201_CREATED
         return new_data
 
 
@@ -66,8 +69,8 @@ def update_experiment_tag(tag_id: int, body_data: Experiment_Tags__Edit):
 
 @router.delete(
     "/{tag_id}",
-    response_model=Experiment_Tags,
     responses={404: {"description": "Not found"}},
+    status_code=204,
 )
 def delete_experiment_tag(tag_id: int):
     with Session(engine) as db:
@@ -78,4 +81,3 @@ def delete_experiment_tag(tag_id: int):
         db.add(row)
         db.commit()
         db.refresh(row)
-        return row

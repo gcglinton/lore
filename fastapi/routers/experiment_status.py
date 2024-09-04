@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response, status
 from sqlmodel import Session, select
 
 from db import engine
@@ -25,6 +25,7 @@ def list_experiment_statuses(offset: int = 0, limit: int = Query(default=100, le
 @router.get(
     "/{status_id}",
     response_model=Experiment_Status,
+    responses={404: {"description": "Not found"}},
 )
 def get_one_experiment_status(status_id: int):
     with Session(engine) as db:
@@ -34,8 +35,8 @@ def get_one_experiment_status(status_id: int):
         return row
 
 
-@router.post("/", response_model=Experiment_Status)
-def add_experiment_status(body_data: Experiment_Status__Edit):
+@router.post("/", response_model=Experiment_Status, status_code=201)
+def add_experiment_status(body_data: Experiment_Status__Edit, response: Response):
     with Session(engine) as db:
         new_data = Experiment_Status__Base()
         for attribute, value in body_data.__dict__.items():
@@ -43,10 +44,16 @@ def add_experiment_status(body_data: Experiment_Status__Edit):
         db.add(new_data)
         db.commit()
         db.refresh(new_data)
+
+        response.status_code = status.HTTP_201_CREATED
         return new_data
 
 
-@router.put("/{status_id}", response_model=Experiment_Status)
+@router.put(
+    "/{status_id}",
+    response_model=Experiment_Status,
+    responses={404: {"description": "Not found"}},
+)
 def update_experiment_status(status_id: int, body_data: Experiment_Status__Edit):
     with Session(engine) as db:
         row = db.get(Experiment_Status__Base, status_id)
@@ -60,7 +67,11 @@ def update_experiment_status(status_id: int, body_data: Experiment_Status__Edit)
         return row
 
 
-@router.delete("/{status_id}", response_model=Experiment_Status)
+@router.delete(
+    "/{status_id}",
+    responses={404: {"description": "Not found"}},
+    status_code=204,
+)
 def delete_experiment_status(status_id: int):
     with Session(engine) as db:
         row = db.get(Experiment_Status__Base, status_id)
@@ -70,4 +81,3 @@ def delete_experiment_status(status_id: int):
         db.add(row)
         db.commit()
         db.refresh(row)
-        return row

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response, status
 from sqlmodel import Session, select
 
 from db import engine
@@ -25,6 +25,7 @@ def list_user_roles(offset: int = 0, limit: int = Query(default=100, le=100)):
 @router.get(
     "/{role_id}",
     response_model=Users_Roles,
+    responses={404: {"description": "Not found"}},
 )
 def get_one_user_role(role_id: int):
     with Session(engine) as db:
@@ -34,8 +35,8 @@ def get_one_user_role(role_id: int):
         return row
 
 
-@router.post("/", response_model=Users_Roles)
-def add_user_role(body_data: Users_Roles__Edit):
+@router.post("/", response_model=Users_Roles, status_code=201)
+def add_user_role(body_data: Users_Roles__Edit, response: Response):
     with Session(engine) as db:
         new_data = Users_Roles__Base()
         for attribute, value in body_data.__dict__.items():
@@ -43,10 +44,16 @@ def add_user_role(body_data: Users_Roles__Edit):
         db.add(new_data)
         db.commit()
         db.refresh(new_data)
+
+        response.status_code = status.HTTP_201_CREATED
         return new_data
 
 
-@router.put("/{role_id}", response_model=Users_Roles)
+@router.put(
+    "/{role_id}",
+    response_model=Users_Roles,
+    responses={404: {"description": "Not found"}},
+)
 def update_user_role(role_id: int, body_data: Users_Roles__Edit):
     with Session(engine) as db:
         row = db.get(Users_Roles__Base, role_id)
@@ -60,7 +67,11 @@ def update_user_role(role_id: int, body_data: Users_Roles__Edit):
         return row
 
 
-@router.delete("/{role_id}", response_model=Users_Roles)
+@router.delete(
+    "/{role_id}",
+    responses={404: {"description": "Not found"}},
+    status_code=204,
+)
 def delete_user_role(role_id: int):
     with Session(engine) as db:
         row = db.get(Users_Roles__Base, role_id)
