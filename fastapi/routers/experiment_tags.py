@@ -51,9 +51,9 @@ def add_experiment_tag(body_data: Experiment_Tags__Edit):
     response_model=Experiment_Tags,
     responses={404: {"description": "Not found"}},
 )
-def update_experiment_tag(item_id: int, body_data: Experiment_Tags__Edit):
+def update_experiment_tag(tag_id: int, body_data: Experiment_Tags__Edit):
     with Session(engine) as db:
-        row = db.get(Experiment_Tags__Base, item_id)
+        row = db.get(Experiment_Tags__Base, tag_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -69,9 +69,9 @@ def update_experiment_tag(item_id: int, body_data: Experiment_Tags__Edit):
     response_model=Experiment_Tags,
     responses={404: {"description": "Not found"}},
 )
-def delete_experiment_tag(item_id: int):
+def delete_experiment_tag(tag_id: int):
     with Session(engine) as db:
-        row = db.get(Experiment_Tags__Base, item_id)
+        row = db.get(Experiment_Tags__Base, tag_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1
