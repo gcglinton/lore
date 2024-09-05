@@ -8,7 +8,7 @@ class Link__Experiments_Users(SQLModel, table=True):
     role_id: int = Field(foreign_key="users_roles.id", primary_key=True)
 
 
-class Experiments_Users(SQLModel):
+class Experiment_Users(SQLModel):
     user_id: int
     user_name_first: str
     user_name_last: str

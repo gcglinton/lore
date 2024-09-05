@@ -10,12 +10,12 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=list[Experiment_Tags])
+@router.get("/", response_model=list[Experiment_Tag])
 def list_experiment_tags(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
         statement = (
-            select(Experiment_Tags__Base)
-            .where(Experiment_Tags__Base.is_deleted == 0)
+            select(Experiment_Tag__Base)
+            .where(Experiment_Tag__Base.is_deleted == 0)
             .offset(offset)
             .limit(limit)
         )
@@ -24,21 +24,21 @@ def list_experiment_tags(offset: int = 0, limit: int = Query(default=100, le=100
 
 @router.get(
     "/{tag_id}",
-    response_model=Experiment_Tags,
+    response_model=Experiment_Tag,
     responses={404: {"description": "Not found"}},
 )
 def get_one_experiment_tag(tag_id: int):
     with Session(engine) as db:
-        row = db.get(Experiment_Tags__Base, tag_id)
+        row = db.get(Experiment_Tag__Base, tag_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         return row
 
 
-@router.post("/", response_model=Experiment_Tags, status_code=201)
-def add_experiment_tag(body_data: Experiment_Tags__Edit, response: Response):
+@router.post("/", response_model=Experiment_Tag, status_code=201)
+def add_experiment_tag(body_data: Experiment_Tag__Edit, response: Response):
     with Session(engine) as db:
-        new_data = Experiment_Tags__Base()
+        new_data = Experiment_Tag__Base()
         for attribute, value in body_data.__dict__.items():
             setattr(new_data, attribute, value)
         db.add(new_data)
@@ -51,12 +51,12 @@ def add_experiment_tag(body_data: Experiment_Tags__Edit, response: Response):
 
 @router.put(
     "/{tag_id}",
-    response_model=Experiment_Tags,
+    response_model=Experiment_Tag,
     responses={404: {"description": "Not found"}},
 )
-def update_experiment_tag(tag_id: int, body_data: Experiment_Tags__Edit):
+def update_experiment_tag(tag_id: int, body_data: Experiment_Tag__Edit):
     with Session(engine) as db:
-        row = db.get(Experiment_Tags__Base, tag_id)
+        row = db.get(Experiment_Tag__Base, tag_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -74,7 +74,7 @@ def update_experiment_tag(tag_id: int, body_data: Experiment_Tags__Edit):
 )
 def delete_experiment_tag(tag_id: int):
     with Session(engine) as db:
-        row = db.get(Experiment_Tags__Base, tag_id)
+        row = db.get(Experiment_Tag__Base, tag_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

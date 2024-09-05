@@ -14,12 +14,12 @@ router = APIRouter(
 
 @router.get(
     "/{experiment_id}/related",
-    response_model=list[Experiments],
+    response_model=list[Experiment],
     responses={404: {"description": "Not found"}},
 )
 def list_related_experiments(experiment_id: int):
     with Session(engine) as db:
-        experiment = db.get(Experiments__Base, experiment_id)
+        experiment = db.get(Experiment__Base, experiment_id)
         if not experiment or experiment.is_deleted:
             raise HTTPException(status_code=404)
 
@@ -35,15 +35,15 @@ def list_related_experiments(experiment_id: int):
         )
 
         rows = (
-            select(Experiments__Base)
+            select(Experiment__Base)
             .where(
-                Experiments__Base.is_deleted == 0, Experiments__Base.id != experiment_id
+                Experiment__Base.is_deleted == 0, Experiment__Base.id != experiment_id
             )
             .join(
                 related,
                 or_(
-                    Experiments__Base.id == related.c.experiment_1,
-                    Experiments__Base.id == related.c.experiment_2,
+                    Experiment__Base.id == related.c.experiment_1,
+                    Experiment__Base.id == related.c.experiment_2,
                 ),
             )
         )
@@ -58,11 +58,11 @@ def list_related_experiments(experiment_id: int):
 )
 def relate_an_experiment(experiment_id: int, related_id: int, response: Response):
     with Session(engine) as db:
-        experiment = db.get(Experiments__Base, experiment_id)
+        experiment = db.get(Experiment__Base, experiment_id)
         if not experiment or experiment.is_deleted:
             raise HTTPException(status_code=404)
 
-        experiment_related = db.get(Experiments__Base, related_id)
+        experiment_related = db.get(Experiment__Base, related_id)
         if not experiment_related or experiment_related.is_deleted:
             raise HTTPException(status_code=404)
 

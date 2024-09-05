@@ -8,14 +8,14 @@ from sqlalchemy import DateTime, func
 import datetime
 
 
-class Users__Base(SQLModel, table=True):
+class User__Base(SQLModel, table=True):
     __tablename__ = "users"
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str
-    name_first: str
-    name_last: str
-    email: Optional[str]
-    phone: Optional[str]
+    name_first: str = Field(default=None)
+    name_last: str = Field(default=None)
+    email: Optional[str] = Field(default=None)
+    phone: Optional[str] = Field(default=None)
     department: int = Field(foreign_key="departments.id")
     created_at: datetime.datetime = Field(
         default_factory=datetime.datetime.now,
@@ -25,30 +25,30 @@ class Users__Base(SQLModel, table=True):
     #         "server_default": text("CURRENT_TIMESTAMP"),
     #     }
     # )
-    notes: Optional[str] = Field(sa_column=Column(TEXT))
+    notes: Optional[str] = Field(default=None, sa_column=Column(TEXT))
     is_legoteam: Optional[bool] = Field(default=0, index=hash)
     is_deleted: Optional[bool] = Field(default=0, index=hash)
 
 
-class Users(SQLModel):
+class User(SQLModel):
     id: int
     username: str
-    name_first: str
-    name_last: str
-    email: str
-    phone: str
+    name_first: str = Field(default=None)
+    name_last: str = Field(default=None)
+    email: str = Field(default=None)
+    phone: str = Field(default=None)
     department: int
     # created_at: float
-    notes: str
+    notes: str = Field(default=None, sa_column=Column(TEXT))
     is_legoteam: bool
 
 
-class Users__Edit(SQLModel):
+class User__Edit(SQLModel):
     username: str
     name_first: Optional[str]
     name_last: Optional[str]
     email: str
     phone: Optional[str]
     department: int
-    notes: Optional[str]
+    notes: Optional[str] = Field(default=None, sa_column=Column(TEXT))
     is_legoteam: Optional[bool]

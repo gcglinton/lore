@@ -6,8 +6,8 @@ from db import engine
 from db.models.experiments import *
 from db.models import (
     Link__Experiments_Tags,
-    Experiment_Tags,
-    Experiment_Tags__Base,
+    Experiment_Tag,
+    Experiment_Tag__Base,
 )
 
 router = APIRouter(
@@ -18,12 +18,12 @@ router = APIRouter(
 
 @router.get(
     "/{experiment_id}/tags",
-    response_model=list[Experiment_Tags],
+    response_model=list[Experiment_Tag],
     responses={404: {"description": "Not found"}},
 )
 def list_experiment_tags(experiment_id: int):
     with Session(engine) as db:
-        experiment = db.get(Experiments__Base, experiment_id)
+        experiment = db.get(Experiment__Base, experiment_id)
         if not experiment or experiment.is_deleted:
             raise HTTPException(status_code=404)
 
@@ -35,9 +35,9 @@ def list_experiment_tags(experiment_id: int):
         print(tags)
 
         rows = (
-            select(Experiment_Tags__Base)
-            .where(Experiment_Tags__Base.is_deleted == 0)
-            .join(tags, Experiment_Tags__Base.id == tags.c.tag_id)
+            select(Experiment_Tag__Base)
+            .where(Experiment_Tag__Base.is_deleted == 0)
+            .join(tags, Experiment_Tag__Base.id == tags.c.tag_id)
         )
 
         return db.exec(rows).all()
@@ -50,11 +50,11 @@ def list_experiment_tags(experiment_id: int):
 )
 def tag_experiment(experiment_id: int, tag_id: int):
     with Session(engine) as db:
-        experiment = db.get(Experiments__Base, experiment_id)
+        experiment = db.get(Experiment__Base, experiment_id)
         if not experiment or experiment.is_deleted:
             raise HTTPException(status_code=404)
 
-        tag = db.get(Experiment_Tags__Base, tag_id)
+        tag = db.get(Experiment_Tag__Base, tag_id)
         if not tag or tag.is_deleted:
             raise HTTPException(status_code=400, detail="invalid tag")
 

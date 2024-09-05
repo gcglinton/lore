@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 
 from db import engine
 from db.models.users import *
-from db.models.departments import Departments__Base
+from db.models.departments import Department__Base
 
 router = APIRouter(
     prefix="/users",
@@ -11,12 +11,12 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=list[Users])
+@router.get("/", response_model=list[User])
 def list_users(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
         statement = (
-            select(Users__Base)
-            .where(Users__Base.is_deleted == 0)
+            select(User__Base)
+            .where(User__Base.is_deleted == 0)
             .offset(offset)
             .limit(limit)
         )
@@ -25,12 +25,12 @@ def list_users(offset: int = 0, limit: int = Query(default=100, le=100)):
 
 @router.get(
     "/{user_id}",
-    response_model=Users,
+    response_model=User,
     responses={404: {"description": "Not found"}},
 )
 def get_one_user(user_id: int):
     with Session(engine) as db:
-        row = db.get(Users__Base, user_id)
+        row = db.get(User__Base, user_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         return row
@@ -38,17 +38,17 @@ def get_one_user(user_id: int):
 
 @router.post(
     "/",
-    response_model=Users,
+    response_model=User,
     responses={400: {"description": "invalid references"}},
     status_code=201,
 )
-def add_user(body_data: Users__Edit, response: Response):
+def add_user(body_data: User__Edit, response: Response):
     with Session(engine) as db:
-        new_data = Users__Base()
+        new_data = User__Base()
         for attribute, value in body_data.__dict__.items():
             setattr(new_data, attribute, value)
 
-        department = db.get(Departments__Base, body_data.department)
+        department = db.get(Department__Base, body_data.department)
         if not department:
             raise HTTPException(status_code=400, detail="invalid department")
         db.add(new_data)
@@ -61,16 +61,16 @@ def add_user(body_data: Users__Edit, response: Response):
 
 @router.put(
     "/{user_id}",
-    response_model=Users,
+    response_model=User,
     responses={404: {"description": "Not found"}},
 )
-def update_user(user_id: int, body_data: Users__Edit):
+def update_user(user_id: int, body_data: User__Edit):
     with Session(engine) as db:
-        row = db.get(Users__Base, user_id)
+        row = db.get(User__Base, user_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
 
-        department = db.get(Departments__Base, body_data.department)
+        department = db.get(Department__Base, body_data.department)
         if not department:
             raise HTTPException(status_code=400, detail="invalid department")
 
@@ -89,7 +89,7 @@ def update_user(user_id: int, body_data: Users__Edit):
 )
 def delete_user(user_id: int):
     with Session(engine) as db:
-        row = db.get(Users__Base, user_id)
+        row = db.get(User__Base, user_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

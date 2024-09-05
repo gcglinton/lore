@@ -36,28 +36,32 @@
 from typing import Optional
 
 from sqlmodel import Field, SQLModel
-from sqlmodel import Column, TEXT
+from sqlmodel import Column, TEXT, Relationship
 
 from sqlalchemy import DateTime, func
 import datetime
 
+from .experiment_areaofscience import Experiment_AreaOfScience__Base
 
-class Experiments__Base(SQLModel, table=True):
+
+class Experiment__Base(SQLModel, table=True):
     __tablename__ = "experiments"
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
-    status: Optional[int] = Field(foreign_key="experiment_statuses.id", index=hash)
+    status: Optional[int] = Field(
+        default=None, foreign_key="experiment_statuses.id", index=hash
+    )
     created_at: datetime.datetime = Field(
         default_factory=datetime.datetime.utcnow,
     )
     updated_at: Optional[datetime.datetime] = Field(
-        sa_column=Column(DateTime(), onupdate=func.now())
+        default_factory=datetime.datetime.utcnow,
+        sa_column=Column(DateTime(), onupdate=func.now()),
     )
     created_user: Optional[int] = Field(foreign_key="users.id")
     delegated: Optional[bool] = Field(default=0)
     department: int = Field(foreign_key="departments.id")
-    research_initiative: Optional[int]
-    area_of_science: Optional[int] = Field(foreign_key="experiment_areaofscience.id")
+    research_initiative: Optional[int] = Field(default=None)
     level_of_effort: Optional[int] = Field(foreign_key="experiment_levelofeffort.id")
     funding_source: Optional[int] = Field(
         default=None, foreign_key="experiment_fundingsource.id"
@@ -78,21 +82,31 @@ class Experiments__Base(SQLModel, table=True):
     fin_initial: Optional[float] = Field(default=0.0)
     fin_actual: Optional[float] = Field(default=0.0)
     fin_automated_reports: Optional[bool] = Field(default=False, index=hash)
+    lego_evo_lead: Optional[int] = Field(
+        default=None, foreign_key="users.id", index=hash
+    )
+    lego_evo_second: Optional[int] = Field(
+        default=None, foreign_key="users.id", index=hash
+    )
     progress: Optional[int] = Field(default=0)
     environment_name: Optional[str] = Field(default=None)
     is_deleted: Optional[bool] = Field(default=0, index=hash)
     is_archived: Optional[bool] = Field(default=0, index=hash)
 
+    area_of_science: Optional[int] = Field(
+        default=None, foreign_key="experiment_areaofscience.id"
+    )
+    area_of_science_name: Optional["Experiment_AreaOfScience__Base"] = Relationship(
+        back_populates="experiments"
+    )
 
-class Experiments(SQLModel):
+
+class Experiment(SQLModel):
     id: Optional[int]
     name: str
     status: Optional[int]
-    # created_at: datetime.datetime = Field(
-    #     sa_column_kwargs={
-    #         "server_default": text("CURRENT_TIMESTAMP"),
-    #     }
-    # )
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
     delegated: bool
     department: int
     research_initiative: Optional[int]
@@ -109,13 +123,15 @@ class Experiments(SQLModel):
     fin_initial: Optional[float]
     fin_actual: Optional[float]
     fin_automated_reports: Optional[bool]
+    lego_evo_lead: Optional[int]
+    lego_evo_second: Optional[int]
     # last_updated: Optional[timestamp]
     progress: Optional[int]
     environment_name: Optional[str]
     is_archived: Optional[bool]
 
 
-class Experiments__Edit(SQLModel):
+class Experiment__Edit(SQLModel):
     name: str
     status: Optional[int] = Field(default=None)
     delegated: Optional[bool] = Field(default=False)
@@ -134,5 +150,24 @@ class Experiments__Edit(SQLModel):
     fin_initial: Optional[float] = Field(default=0.0)
     fin_actual: Optional[float] = Field(default=0.0)
     fin_automated_reports: Optional[bool] = Field(default=False)
+    lego_evo_lead: Optional[int] = Field(default=None)
+    lego_evo_second: Optional[int] = Field(default=None)
     environment_name: Optional[str] = Field(default="")
     progress: Optional[int] = Field(default=0)
+
+
+class Experiment_CloudGroupMember(SQLModel):
+    FirstName: str
+    LastName: str
+    DisplayName: str
+    Email: str
+    UPN: str
+    AccountEnabled: bool
+    InvitationState: str
+
+
+class Experiment_CloudGroup(SQLModel):
+    GroupName: str
+    GroupID: str
+    GroupRole: str
+    Members: list[Experiment_CloudGroupMember]

@@ -10,12 +10,12 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=list[Users_Roles])
+@router.get("/", response_model=list[User_Role])
 def list_user_roles(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
         statement = (
-            select(Users_Roles__Base)
-            .where(Users_Roles__Base.is_deleted == 0)
+            select(User_Role__Base)
+            .where(User_Role__Base.is_deleted == 0)
             .offset(offset)
             .limit(limit)
         )
@@ -24,21 +24,21 @@ def list_user_roles(offset: int = 0, limit: int = Query(default=100, le=100)):
 
 @router.get(
     "/{role_id}",
-    response_model=Users_Roles,
+    response_model=User_Role,
     responses={404: {"description": "Not found"}},
 )
 def get_one_user_role(role_id: int):
     with Session(engine) as db:
-        row = db.get(Users_Roles__Base, role_id)
+        row = db.get(User_Role__Base, role_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         return row
 
 
-@router.post("/", response_model=Users_Roles, status_code=201)
-def add_user_role(body_data: Users_Roles__Edit, response: Response):
+@router.post("/", response_model=User_Role, status_code=201)
+def add_user_role(body_data: User_Role__Edit, response: Response):
     with Session(engine) as db:
-        new_data = Users_Roles__Base()
+        new_data = User_Role__Base()
         for attribute, value in body_data.__dict__.items():
             setattr(new_data, attribute, value)
         db.add(new_data)
@@ -51,12 +51,12 @@ def add_user_role(body_data: Users_Roles__Edit, response: Response):
 
 @router.put(
     "/{role_id}",
-    response_model=Users_Roles,
+    response_model=User_Role,
     responses={404: {"description": "Not found"}},
 )
-def update_user_role(role_id: int, body_data: Users_Roles__Edit):
+def update_user_role(role_id: int, body_data: User_Role__Edit):
     with Session(engine) as db:
-        row = db.get(Users_Roles__Base, role_id)
+        row = db.get(User_Role__Base, role_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -74,7 +74,7 @@ def update_user_role(role_id: int, body_data: Users_Roles__Edit):
 )
 def delete_user_role(role_id: int):
     with Session(engine) as db:
-        row = db.get(Users_Roles__Base, role_id)
+        row = db.get(User_Role__Base, role_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1

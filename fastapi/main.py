@@ -90,31 +90,31 @@ admin.add_view(
     ModelView(Experiment_Status__Base, label="Experiments - Statuses", name="Status")
 )
 
-from db.models import Experiment_Tags__Base
+from db.models import Experiment_Tag__Base
 
-admin.add_view(ModelView(Experiment_Tags__Base, label="Experiments - Tags", name="Tag"))
+admin.add_view(ModelView(Experiment_Tag__Base, label="Experiments - Tags", name="Tag"))
 
-from db.models import Cloud_Providers__Base
+from db.models import Cloud_Provider__Base
 
 admin.add_view(
-    ModelView(Cloud_Providers__Base, label="Cloud Providers", name="Cloud Provider")
+    ModelView(Cloud_Provider__Base, label="Cloud Providers", name="Cloud Provider")
 )
 
-from db.models import Experiments__Base
+from db.models import Experiment__Base
 
-admin.add_view(ModelView(Experiments__Base, label="Experiments", name="Exoeriment"))
+admin.add_view(ModelView(Experiment__Base, label="Experiments", name="Exoeriment"))
 
-from db.models import Departments__Base
+from db.models import Department__Base
 
-admin.add_view(ModelView(Departments__Base, label="Departments", name="Department"))
+admin.add_view(ModelView(Department__Base, label="Departments", name="Department"))
 
-from db.models import Users__Base
+from db.models import User__Base
 
-admin.add_view(ModelView(Users__Base, label="Users", name="User"))
+admin.add_view(ModelView(User__Base, label="Users", name="User"))
 
-from db.models import Users_Roles__Base
+from db.models import User_Role__Base
 
-admin.add_view(ModelView(Users_Roles__Base, label="Users - Roles", name="Role"))
+admin.add_view(ModelView(User_Role__Base, label="Users - Roles", name="Role"))
 
 # Mount admin to your app
 admin.mount_to(app)

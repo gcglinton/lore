@@ -12,13 +12,13 @@ router = APIRouter(
 
 @router.get(
     "/",
-    response_model=list[Departments],
+    response_model=list[Department],
 )
 def list_departments(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
         statement = (
-            select(Departments__Base)
-            .where(Departments__Base.is_deleted == 0)
+            select(Department__Base)
+            .where(Department__Base.is_deleted == 0)
             .offset(offset)
             .limit(limit)
         )
@@ -27,21 +27,21 @@ def list_departments(offset: int = 0, limit: int = Query(default=100, le=100)):
 
 @router.get(
     "/{department_id}",
-    response_model=Departments,
+    response_model=Department,
     responses={404: {"description": "Not found"}},
 )
 def get_one_department(department_id: int):
     with Session(engine) as db:
-        row = db.get(Departments__Base, department_id)
+        row = db.get(Department__Base, department_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         return row
 
 
-@router.post("/", response_model=Departments, status_code=201)
-def add_department(body_data: Departments__Edit, response: Response):
+@router.post("/", response_model=Department, status_code=201)
+def add_department(body_data: Department__Edit, response: Response):
     with Session(engine) as db:
-        new_data = Departments__Base()
+        new_data = Department__Base()
         for attribute, value in body_data.__dict__.items():
             setattr(new_data, attribute, value)
         db.add(new_data)
@@ -54,12 +54,12 @@ def add_department(body_data: Departments__Edit, response: Response):
 
 @router.post(
     "/{department_id}",
-    response_model=Departments,
+    response_model=Department,
     responses={404: {"description": "Not found"}},
 )
-def update_department(department_id: int, body_data: Departments__Edit):
+def update_department(department_id: int, body_data: Department__Edit):
     with Session(engine) as db:
-        row = db.get(Departments__Base, department_id)
+        row = db.get(Department__Base, department_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         body_data_dump = body_data.model_dump(exclude_unset=True)
@@ -77,7 +77,7 @@ def update_department(department_id: int, body_data: Departments__Edit):
 )
 def delete_department(department_id: int):
     with Session(engine) as db:
-        row = db.get(Departments__Base, department_id)
+        row = db.get(Department__Base, department_id)
         if not row or row.is_deleted:
             raise HTTPException(status_code=404)
         row.is_deleted = 1
