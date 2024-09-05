@@ -84,16 +84,7 @@ def list_experiments(
     department: list[int] = Query(default=[]),
 ):
     with Session(engine) as db:
-        statement = select(Experiment__Base).where(
-            and_(
-                Experiment__Base.is_deleted == 0,
-                # col(Experiment__Base.status).in_(status),
-                # Experiment__Base.lego_evo_lead == evo_lead,
-                # Experiment__Base.lego_evo_second == evo_second,
-                # col(Experiment__Base.cloud_provider_actual).in_(cloud_provider),
-                # col(Experiment__Base.department).in_(department),
-            )
-        )
+        statement = select(Experiment__Base).where(Experiment__Base.is_deleted == 0)
 
         filters = []
         if status:
@@ -111,25 +102,9 @@ def list_experiments(
         if department:
             filters.append(col(Experiment__Base.department).in_(department))
 
-        print(filters)
-        # if status:
-        #     statement.where(col(Experiment__Base.status).in_(status))
-
-        # if evo_lead:
-        #     statement.where(Experiment__Base.lego_evo_lead == evo_lead)
-
-        # if evo_second:
-        #     statement.where(Experiment__Base.lego_evo_second == evo_second)
-
-        # if cloud_provider:
-        #     statement.where(col(Experiment__Base.cloud_provider_actual).in_(cloud_provider))
-
-        # if department:
-        #     statement.where(col(Experiment__Base.department).in_(department))
         if filters:
             statement = statement.where(and_(*filters))
         statement = statement.offset(offset).limit(limit)
-        print(statement)
         return db.exec(statement).all()
 
 

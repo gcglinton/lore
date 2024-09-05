@@ -86,9 +86,7 @@ admin.add_view(
 
 from db.models import Experiment_Status__Base
 
-admin.add_view(
-    ModelView(Experiment_Status__Base, label="Experiments - Statuses", name="Status")
-)
+admin.add_view(ModelView(Experiment_Status__Base, label="Experiments - Statuses", name="Status"))
 
 from db.models import Experiment_Tag__Base
 
@@ -96,9 +94,7 @@ admin.add_view(ModelView(Experiment_Tag__Base, label="Experiments - Tags", name=
 
 from db.models import Cloud_Provider__Base
 
-admin.add_view(
-    ModelView(Cloud_Provider__Base, label="Cloud Providers", name="Cloud Provider")
-)
+admin.add_view(ModelView(Cloud_Provider__Base, label="Cloud Providers", name="Cloud Provider"))
 
 from db.models import Experiment__Base
 

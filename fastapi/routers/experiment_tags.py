@@ -13,7 +13,12 @@ router = APIRouter(
 @router.get("/", response_model=list[Experiment_Tag])
 def list_experiment_tags(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
-        statement = select(Experiment_Tag__Base).where(Experiment_Tag__Base.is_deleted == 0).offset(offset).limit(limit)
+        statement = (
+            select(Experiment_Tag__Base)
+            .where(Experiment_Tag__Base.is_deleted == 0)
+            .offset(offset)
+            .limit(limit)
+        )
         return db.exec(statement).all()
 
 

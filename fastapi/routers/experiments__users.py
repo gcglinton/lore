@@ -113,9 +113,7 @@ def list_cloud_experiment_users(experiment_id: int):
         204: {"description": "User added to experiment with defined role"},
     },
 )
-def add_user_to_experiment(
-    experiment_id: int, user_id: int, role_id: int, response: Response
-):
+def add_user_to_experiment(experiment_id: int, user_id: int, role_id: int, response: Response):
 
     with Session(engine) as db:
         experiment = db.get(Experiment__Base, experiment_id)

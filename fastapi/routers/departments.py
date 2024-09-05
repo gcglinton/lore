@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query, Response, status
-from sqlmodel import Session, select
+from sqlmodel import Session, select, col, and_
 
 from db import engine
 from db.models.departments import *
@@ -14,15 +14,22 @@ router = APIRouter(
     "/",
     response_model=list[Department],
 )
-def list_departments(offset: int = 0, limit: int = Query(default=100, le=100)):
+def list_departments(
+    offset: int = 0,
+    limit: int = Query(default=100, le=100),
+    only_science: bool = False,
+):
     with Session(engine) as db:
-        statement = (
-            select(Department__Base)
-            .where(Department__Base.is_deleted == 0)
-            .offset(offset)
-            .limit(limit)
-        )
-        return db.exec(statement).all()
+        statement = select(Department__Base).where(Department__Base.is_deleted == 0)
+
+        filters = []
+        if only_science:
+            filters.append(Department__Base.is_science == True)
+
+        if filters:
+            statement = statement.where(and_(*filters))
+
+        return db.exec(statement.offset(offset).limit(limit)).all()
 
 
 @router.get(

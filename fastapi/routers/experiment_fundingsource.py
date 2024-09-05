@@ -50,7 +50,9 @@ def add_experiment_funding_source(posted_data: Experiment_FundingSource__Edit, r
 
 
 @router.put("/{fundingsource_id}", response_model=Experiment_FundingSource)
-def update_experiment_funding_source(fundingsource_id: int, posted_data: Experiment_FundingSource__Edit):
+def update_experiment_funding_source(
+    fundingsource_id: int, posted_data: Experiment_FundingSource__Edit
+):
     with Session(engine) as db:
         row = db.get(Experiment_FundingSource__Base, fundingsource_id)
         if not row or row.is_deleted:

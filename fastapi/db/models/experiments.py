@@ -48,9 +48,7 @@ class Experiment__Base(SQLModel, table=True):
     __tablename__ = "experiments"
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
-    status: Optional[int] = Field(
-        default=None, foreign_key="experiment_statuses.id", index=hash
-    )
+    status: Optional[int] = Field(default=None, foreign_key="experiment_statuses.id", index=hash)
     created_at: datetime.datetime = Field(
         default_factory=datetime.datetime.utcnow,
     )
@@ -63,18 +61,12 @@ class Experiment__Base(SQLModel, table=True):
     department: int = Field(foreign_key="departments.id")
     research_initiative: Optional[int] = Field(default=None)
     level_of_effort: Optional[int] = Field(foreign_key="experiment_levelofeffort.id")
-    funding_source: Optional[int] = Field(
-        default=None, foreign_key="experiment_fundingsource.id"
-    )
+    funding_source: Optional[int] = Field(default=None, foreign_key="experiment_fundingsource.id")
     data_sensivitity: Optional[int] = Field(
         default=None, foreign_key="experiment_datasensitivity.id"
     )
-    cloud_provider_requested: Optional[int] = Field(
-        default=None, foreign_key="cloud_providers.id"
-    )
-    cloud_provider_actual: Optional[int] = Field(
-        default=None, foreign_key="cloud_providers.id"
-    )
+    cloud_provider_requested: Optional[int] = Field(default=None, foreign_key="cloud_providers.id")
+    cloud_provider_actual: Optional[int] = Field(default=None, foreign_key="cloud_providers.id")
     background: Optional[str] = Field(default=None, sa_column=Column(TEXT))
     description: Optional[str] = Field(default=None, sa_column=Column(TEXT))
     goals: Optional[str] = Field(default=None, sa_column=Column(TEXT))
@@ -82,20 +74,14 @@ class Experiment__Base(SQLModel, table=True):
     fin_initial: Optional[float] = Field(default=0.0)
     fin_actual: Optional[float] = Field(default=0.0)
     fin_automated_reports: Optional[bool] = Field(default=False, index=hash)
-    lego_evo_lead: Optional[int] = Field(
-        default=None, foreign_key="users.id", index=hash
-    )
-    lego_evo_second: Optional[int] = Field(
-        default=None, foreign_key="users.id", index=hash
-    )
+    lego_evo_lead: Optional[int] = Field(default=None, foreign_key="users.id", index=hash)
+    lego_evo_second: Optional[int] = Field(default=None, foreign_key="users.id", index=hash)
     progress: Optional[int] = Field(default=0)
     environment_name: Optional[str] = Field(default=None)
     is_deleted: Optional[bool] = Field(default=0, index=hash)
     is_archived: Optional[bool] = Field(default=0, index=hash)
 
-    area_of_science: Optional[int] = Field(
-        default=None, foreign_key="experiment_areaofscience.id"
-    )
+    area_of_science: Optional[int] = Field(default=None, foreign_key="experiment_areaofscience.id")
     area_of_science_name: Optional["Experiment_AreaOfScience__Base"] = Relationship(
         back_populates="experiments"
     )

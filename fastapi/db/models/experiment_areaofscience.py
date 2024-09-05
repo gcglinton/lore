@@ -13,9 +13,7 @@ class Experiment_AreaOfScience__Base(SQLModel, table=True):
     description: Optional[str] = Field(default=None, sa_column=Column(TEXT))
     is_deleted: Optional[bool] = Field(default=0, index=hash)
 
-    experiments: list["Experiment__Base"] = Relationship(
-        back_populates="area_of_science_name"
-    )
+    experiments: list["Experiment__Base"] = Relationship(back_populates="area_of_science_name")
 
 
 class Experiment_AreaOfScience(SQLModel):

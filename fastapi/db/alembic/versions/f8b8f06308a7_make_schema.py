@@ -56,12 +56,8 @@ def upgrade() -> None:
         sa.Column("cloud_dg_email", sqlmodel.sql.sqltypes.AutoString(), nullable=True),
         sa.Column("aom_name", sqlmodel.sql.sqltypes.AutoString(), nullable=True),
         sa.Column("aom_email", sqlmodel.sql.sqltypes.AutoString(), nullable=True),
-        sa.Column(
-            "client_exec_name", sqlmodel.sql.sqltypes.AutoString(), nullable=True
-        ),
-        sa.Column(
-            "client_exec_email", sqlmodel.sql.sqltypes.AutoString(), nullable=True
-        ),
+        sa.Column("client_exec_name", sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+        sa.Column("client_exec_email", sqlmodel.sql.sqltypes.AutoString(), nullable=True),
         sa.Column("sdm_name", sqlmodel.sql.sqltypes.AutoString(), nullable=True),
         sa.Column("sdm_email", sqlmodel.sql.sqltypes.AutoString(), nullable=True),
         sa.Column("description", sa.TEXT(), nullable=True),
@@ -69,12 +65,8 @@ def upgrade() -> None:
         sa.Column("is_deleted", sa.Boolean(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(
-        op.f("ix_departments_is_deleted"), "departments", ["is_deleted"], unique=False
-    )
-    op.create_index(
-        op.f("ix_departments_is_science"), "departments", ["is_science"], unique=False
-    )
+    op.create_index(op.f("ix_departments_is_deleted"), "departments", ["is_deleted"], unique=False)
+    op.create_index(op.f("ix_departments_is_science"), "departments", ["is_science"], unique=False)
     op.create_table(
         "experiment_areaofscience",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -168,9 +160,7 @@ def upgrade() -> None:
         sa.Column("is_deleted", sa.Boolean(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(
-        op.f("ix_users_roles_is_deleted"), "users_roles", ["is_deleted"], unique=False
-    )
+    op.create_index(op.f("ix_users_roles_is_deleted"), "users_roles", ["is_deleted"], unique=False)
     op.create_table(
         "users",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -191,9 +181,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(op.f("ix_users_is_deleted"), "users", ["is_deleted"], unique=False)
-    op.create_index(
-        op.f("ix_users_is_legoteam"), "users", ["is_legoteam"], unique=False
-    )
+    op.create_index(op.f("ix_users_is_legoteam"), "users", ["is_legoteam"], unique=False)
     op.create_table(
         "experiments",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -219,9 +207,7 @@ def upgrade() -> None:
         sa.Column("fin_actual", sa.Float(), nullable=True),
         sa.Column("fin_automated_reports", sa.Boolean(), nullable=True),
         sa.Column("progress", sa.Integer(), nullable=True),
-        sa.Column(
-            "environment_name", sqlmodel.sql.sqltypes.AutoString(), nullable=True
-        ),
+        sa.Column("environment_name", sqlmodel.sql.sqltypes.AutoString(), nullable=True),
         sa.Column("is_deleted", sa.Boolean(), nullable=True),
         sa.Column("is_archived", sa.Boolean(), nullable=True),
         sa.ForeignKeyConstraint(
@@ -271,12 +257,8 @@ def upgrade() -> None:
     op.create_index(
         op.f("ix_experiments_is_archived"), "experiments", ["is_archived"], unique=False
     )
-    op.create_index(
-        op.f("ix_experiments_is_deleted"), "experiments", ["is_deleted"], unique=False
-    )
-    op.create_index(
-        op.f("ix_experiments_status"), "experiments", ["status"], unique=False
-    )
+    op.create_index(op.f("ix_experiments_is_deleted"), "experiments", ["is_deleted"], unique=False)
+    op.create_index(op.f("ix_experiments_status"), "experiments", ["status"], unique=False)
     op.create_table(
         "link_experiments_related",
         sa.Column("experiment_1", sa.Integer(), nullable=False),
@@ -335,9 +317,7 @@ def downgrade() -> None:
     op.drop_index(op.f("ix_experiments_status"), table_name="experiments")
     op.drop_index(op.f("ix_experiments_is_deleted"), table_name="experiments")
     op.drop_index(op.f("ix_experiments_is_archived"), table_name="experiments")
-    op.drop_index(
-        op.f("ix_experiments_fin_automated_reports"), table_name="experiments"
-    )
+    op.drop_index(op.f("ix_experiments_fin_automated_reports"), table_name="experiments")
     op.drop_table("experiments")
     op.drop_index(op.f("ix_users_is_legoteam"), table_name="users")
     op.drop_index(op.f("ix_users_is_deleted"), table_name="users")
@@ -346,9 +326,7 @@ def downgrade() -> None:
     op.drop_table("users_roles")
     op.drop_index(op.f("ix_experiment_tags_is_deleted"), table_name="experiment_tags")
     op.drop_table("experiment_tags")
-    op.drop_index(
-        op.f("ix_experiment_statuses_is_deleted"), table_name="experiment_statuses"
-    )
+    op.drop_index(op.f("ix_experiment_statuses_is_deleted"), table_name="experiment_statuses")
     op.drop_table("experiment_statuses")
     op.drop_index(
         op.f("ix_experiment_levelofeffort_is_deleted"),

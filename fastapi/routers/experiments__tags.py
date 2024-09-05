@@ -32,7 +32,6 @@ def list_experiment_tags(experiment_id: int):
             .where(Link__Experiments_Tags.experiment_id == experiment_id)
             .subquery("tags")
         )
-        print(tags)
 
         rows = (
             select(Experiment_Tag__Base)

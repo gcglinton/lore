@@ -11,9 +11,7 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[Experiment_AreaOfScience])
-def list_experiment_areas_of_science(
-    offset: int = 0, limit: int = Query(default=100, le=100)
-):
+def list_experiment_areas_of_science(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
         statement = (
             select(Experiment_AreaOfScience__Base)
@@ -38,9 +36,7 @@ def get_one_experiment_area_of_science(areaofscience_id: int):
 
 
 @router.post("/", response_model=Experiment_AreaOfScience, status_code=201)
-def add_experiment_area_of_science(
-    body_data: Experiment_AreaOfScience__Edit, response: Response
-):
+def add_experiment_area_of_science(body_data: Experiment_AreaOfScience__Edit, response: Response):
     with Session(engine) as db:
         new_data = Experiment_AreaOfScience__Base()
         for attribute, value in body_data.__dict__.items():

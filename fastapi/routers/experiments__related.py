@@ -36,9 +36,7 @@ def list_related_experiments(experiment_id: int):
 
         rows = (
             select(Experiment__Base)
-            .where(
-                Experiment__Base.is_deleted == 0, Experiment__Base.id != experiment_id
-            )
+            .where(Experiment__Base.is_deleted == 0, Experiment__Base.id != experiment_id)
             .join(
                 related,
                 or_(

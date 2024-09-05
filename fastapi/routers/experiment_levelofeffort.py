@@ -11,9 +11,7 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[Experiment_LevelOfEffort])
-def list_experiment_levels_of_efforts(
-    offset: int = 0, limit: int = Query(default=100, le=100)
-):
+def list_experiment_levels_of_efforts(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
         statement = (
             select(Experiment_LevelOfEffort__Base)
@@ -38,9 +36,7 @@ def get_one_experiment_level_of_effort(levelofeffort_id: int):
 
 
 @router.post("/", response_model=Experiment_LevelOfEffort, status_code=201)
-def add_experiment_level_of_effort(
-    body_data: Experiment_LevelOfEffort__Edit, response: Response
-):
+def add_experiment_level_of_effort(body_data: Experiment_LevelOfEffort__Edit, response: Response):
     with Session(engine) as db:
         new_data = Experiment_LevelOfEffort__Base()
         for attribute, value in body_data.__dict__.items():
