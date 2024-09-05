@@ -11,9 +11,7 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[Experiment_FundingSource])
-def list_experiment_funding_sources(
-    offset: int = 0, limit: int = Query(default=100, le=100)
-):
+def list_experiment_funding_sources(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
         statement = (
             select(Experiment_FundingSource__Base)
@@ -38,9 +36,7 @@ def get_one_experiment_funding_source(fundingsource_id: int):
 
 
 @router.post("/", response_model=Experiment_FundingSource, status_code=201)
-def add_experiment_funding_source(
-    posted_data: Experiment_FundingSource__Edit, response: Response
-):
+def add_experiment_funding_source(posted_data: Experiment_FundingSource__Edit, response: Response):
     with Session(engine) as db:
         new_data = Experiment_FundingSource__Base()
         for attribute, value in posted_data.__dict__.items():
@@ -54,9 +50,7 @@ def add_experiment_funding_source(
 
 
 @router.put("/{fundingsource_id}", response_model=Experiment_FundingSource)
-def update_experiment_funding_source(
-    fundingsource_id: int, posted_data: Experiment_FundingSource__Edit
-):
+def update_experiment_funding_source(fundingsource_id: int, posted_data: Experiment_FundingSource__Edit):
     with Session(engine) as db:
         row = db.get(Experiment_FundingSource__Base, fundingsource_id)
         if not row or row.is_deleted:

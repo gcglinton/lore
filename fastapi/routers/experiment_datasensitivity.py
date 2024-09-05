@@ -11,9 +11,7 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[Experiment_DataSensitivity])
-def list_experiment_data_sensivitities(
-    offset: int = 0, limit: int = Query(default=100, le=100)
-):
+def list_experiment_data_sensivitities(offset: int = 0, limit: int = Query(default=100, le=100)):
     with Session(engine) as db:
         statement = (
             select(Experiment_DataSensitivity__Base)
@@ -38,9 +36,7 @@ def get_one_experiment_area_of_science(datasensitivity_id: int):
 
 
 @router.post("/", response_model=Experiment_DataSensitivity, status_code=201)
-def add_experiment_data_sensivitity(
-    posted_data: Experiment_DataSensitivity__Edit, response: Response
-):
+def add_experiment_data_sensivitity(posted_data: Experiment_DataSensitivity__Edit, response: Response):
     with Session(engine) as db:
         new_data = Experiment_DataSensitivity__Base()
         for attribute, value in posted_data.__dict__.items():
@@ -54,9 +50,7 @@ def add_experiment_data_sensivitity(
 
 
 @router.put("/{datasensitivity_id}", response_model=Experiment_DataSensitivity)
-def update_experiment_data_sensivitity(
-    datasensitivity_id: int, posted_data: Experiment_DataSensitivity__Edit
-):
+def update_experiment_data_sensivitity(datasensitivity_id: int, posted_data: Experiment_DataSensitivity__Edit):
     with Session(engine) as db:
         row = db.get(Experiment_DataSensitivity__Base, datasensitivity_id)
         if not row or row.is_deleted:
