@@ -261,6 +261,12 @@ def upgrade() -> None:
     op.create_index(
         op.f("ix_experiments_is_archived"), "experiments", ["is_archived"], unique=False
     )
+    op.create_index(
+        op.f("ix_experiments_lego_evo_lead"), "experiments", ["lego_evo_lead"], unique=False
+    )
+    op.create_index(
+        op.f("ix_experiments_lego_evo_second"), "experiments", ["lego_evo_second"], unique=False
+    )
     op.create_index(op.f("ix_experiments_is_deleted"), "experiments", ["is_deleted"], unique=False)
     op.create_index(op.f("ix_experiments_status"), "experiments", ["status"], unique=False)
 

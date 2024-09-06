@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException, Query, Response, status
 from sqlmodel import Session, select, col, and_
+from fastapi import APIRouter, HTTPException, Query, Response, status
 
 from db import engine
-from db.models.departments import *
+from db.models.departments import Department, Department__Base, Department__Edit
 
 router = APIRouter(
     prefix="/departments",

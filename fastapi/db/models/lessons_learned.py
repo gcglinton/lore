@@ -14,17 +14,17 @@ class Lessons_Learned__Base(SQLModel, table=True):
     sent: datetime.datetime = Field(
         default_factory=datetime.datetime.utcnow,
     )
-    submitted: datetime.datetime
-    reason_other: str
-    service_quality: int
-    responsiveness: int
-    reliability: int
-    ease_of_use: int
+    submitted: Optional[datetime.datetime] = None
+    reason_other: Optional[str] = None
+    service_quality: Optional[int] = None
+    responsiveness: Optional[int] = None
+    reliability: Optional[int] = None
+    ease_of_use: Optional[int] = None
     benefits: str = Field(sa_column=Column(TEXT))
     suggestions: str = Field(sa_column=Column(TEXT))
     challenges: str = Field(sa_column=Column(TEXT))
     how_evo_beneficial: str = Field(sa_column=Column(TEXT))
-    likely_to_reccommend: int
+    likely_to_reccommend: Optional[int] = None
     is_deleted: Optional[bool] = Field(default=0, index=hash)
 
 

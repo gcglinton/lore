@@ -22,9 +22,7 @@ def list_lessons_learned(
     user: int = None,
 ):
     with Session(engine) as db:
-        statement = select(Lessons_Learned__Base).where(
-            Lessons_Learned__Base.is_deleted == 0
-        )
+        statement = select(Lessons_Learned__Base).where(Lessons_Learned__Base.is_deleted == 0)
 
         filters = []
         if experiment:
@@ -93,14 +91,15 @@ def send_lessons_learned(body_data: Lessons_Learned__Send, response: Response):
             raise HTTPException(status_code=400, detail="invalid experiment")
 
         sent_ids = []
-        for user in Lessons_Learned__Send.users:
+
+        for user in body_data.users:
             user_deets = db.get(User__Base, user)
             if not user_deets:
                 raise HTTPException(status_code=400, detail="invalid user")
 
             new_data = Lessons_Learned__Base()
             new_data.user_id = user
-            new_data.experiment_id = Lessons_Learned__Send.experiment_id
+            new_data.experiment_id = body_data.experiment_id
             new_data.guid = uuid.uuid4()
 
             db.add(new_data)
@@ -117,6 +116,9 @@ def send_lessons_learned(body_data: Lessons_Learned__Send, response: Response):
             .join(User__Base)
             .where(col(Lessons_Learned__Base.id).in_(sent_ids))
         )
+
+        print(f"{sent_ids}")
+        print(sent_rows)
 
         response.status_code = status.HTTP_202_ACCEPTED
         return db.exec(sent_rows).all()

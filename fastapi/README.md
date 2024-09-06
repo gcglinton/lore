@@ -1,15 +1,13 @@
 
 ## Context
 
-This sample is using [FastAPI](https://fastapi.tiangolo.com/) for it's API interface handler, [SQLModel](https://sqlmodel.tiangolo.com/) as it's ORM, and [Alembic](https://alembic.sqlalchemy.org/en/latest/index.html) to manage it's DB migrations (automatic schema tracking)
+This sample is using [FastAPI](https://fastapi.tiangolo.com/) for it's API interface handler, [SQLModel](https://sqlmodel.tiangolo.com/) as it's ORM, and [Alembic](https://alembic.sqlalchemy.org/en/latest/index.html) to manage it's DB migrations (automatic schema tracking).
 
 ## Database Setup
 
 The project is currently using an SQLite database because it's simple, but will likely transition to PostgreSQL, MySQL, or MSSQL at some point in order to provide better cloud operations.
 
-To setup the database, you'll need to run `alembic upgrade head` from withtin this directory. This will create/update the SQLite file, and all the required tables required.
-
-Then to insert some data, run `python setup_db.py`.
+To setup the database, you'll need to run `alembic upgrade head` from withtin this directory. This will create/update the SQLite file, all the tables required, and some base data.
 
 ## Running 
 
