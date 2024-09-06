@@ -208,6 +208,8 @@ def upgrade() -> None:
         sa.Column("fin_automated_reports", sa.Boolean(), nullable=True),
         sa.Column("progress", sa.Integer(), nullable=True),
         sa.Column("environment_name", sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+        sa.Column("lego_evo_lead", sa.Integer(), nullable=True),
+        sa.Column("lego_evo_second", sa.Integer(), nullable=True),
         sa.Column("is_deleted", sa.Boolean(), nullable=True),
         sa.Column("is_archived", sa.Boolean(), nullable=True),
         sa.ForeignKeyConstraint(
