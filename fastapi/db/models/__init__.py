@@ -7,6 +7,7 @@ from .experiment_levelofeffort import *
 from .experiment_status import *
 from .experiment_tags import *
 from .experiments import *
+from .lessons_learned import *
 from .link_experiments_related import *
 from .link_experiments_tags import *
 from .link_experiments_users import *

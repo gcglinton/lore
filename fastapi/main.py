@@ -1,20 +1,23 @@
-from fastapi import FastAPI
-
-from routers import cloud_providers
-from routers import departments
-from routers import experiment_areaofscience
-from routers import experiment_datasensitivity
-from routers import experiment_fundingsource
-from routers import experiment_levelofeffort
-from routers import experiment_status
-from routers import experiment_tags
-from routers import experiments
-from routers import experiments__related
-from routers import experiments__tags
-from routers import experiments__users
-from routers import users_roles
-from routers import users
 from admin import admin
+from routers import (
+    cloud_providers,
+    departments,
+    experiment_areaofscience,
+    experiment_datasensitivity,
+    experiment_fundingsource,
+    experiment_levelofeffort,
+    experiment_status,
+    experiment_tags,
+    experiments,
+    experiments__related,
+    experiments__tags,
+    experiments__users,
+    lessons_learned,
+    users,
+    users_roles,
+)
+
+from fastapi import FastAPI
 
 app = FastAPI()
 
@@ -30,6 +33,7 @@ app.include_router(experiments.router)
 app.include_router(experiments__related.router)
 app.include_router(experiments__tags.router)
 app.include_router(experiments__users.router)
+app.include_router(lessons_learned.router)
 app.include_router(users.router)
 app.include_router(users_roles.router)
 
