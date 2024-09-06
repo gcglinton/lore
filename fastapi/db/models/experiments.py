@@ -1,48 +1,16 @@
-# Table experiments {
-#   id integer [primary key, increment]
-#   name varchar
-#   status integer [ref: > experiments_statuses.id]
-#   created_ts timestamp [default: `now()`]
-#   created_user integer [ref: > users.id]
-#   delegated bool [default: false]
-#   sbda integer [ref: > departments.id]
-#   research_initiative integer
-#   area_of_science integer [ref: > experiments_areasofscience.id]
-#   background text
-#   description text
-#   goals text
-#   level_of_effort integer [ref: > experiments_levelofeffort.id, default: 3]
-#   cloud_provider_requested integer [ref: - cloud_providers.id]
-#   cloud_provider_actual integer [ref: - cloud_providers.id]
-#   forcasted_end date [default: `now()`]
-#   fin_forecasted float
-#   fin_initial float
-#   fin_actual float [default: 0.0]
-#   last_updated timestamp [default: `now()`]
-#   fin_automated_reports bool [default: false]
-#   environment_name varchar
-#   funding_source integer [ref: > experiments_fundingsource.id]
-#   data_sensivitity integer [ref: > experiments_datasensitivity.id]
-#   progress integer [default: 0]
-#   is_deleted bool [default: 0]
-#   is_archived bool [default: 0]
-
-#   indexes {
-#     status
-#     (is_deleted, is_archived)
-#   }
-# }
-
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from sqlmodel import Field, SQLModel
 from sqlmodel import Column, TEXT, Relationship
 
 from sqlalchemy import DateTime, func
+from sqlalchemy.orm import relationship as sa_relationship
+
 import datetime
 
-from .experiment_areaofscience import Experiment_AreaOfScience__Base
-
+if TYPE_CHECKING:
+    from db.models import Department__Base
+    from db.models import Experiment_AreaOfScience__Base, Experiment_DataSensitivity__Base, Experiment_Status__Base
 
 class Experiment__Base(SQLModel, table=True):
     __tablename__ = "experiments"
@@ -85,6 +53,31 @@ class Experiment__Base(SQLModel, table=True):
     area_of_science_name: Optional["Experiment_AreaOfScience__Base"] = Relationship(
         back_populates="experiments"
     )
+
+    # cloud_provider_requested_name: Optional["Cloud_Provider__Base"] = Relationship(
+    #     back_populates="experiments_requested",
+    #     sa_relationship=(sa_relationship(foreign_keys="cloud_providers.id")),
+    # )
+    # cloud_provider_actual_name: Optional["Cloud_Provider__Base"] = Relationship(
+    #     back_populates="experiments_actual",
+    #     sa_relationship=(sa_relationship(foreign_keys="cloud_providers.id")),
+    # )
+
+    department_name: Optional["Department__Base"] = Relationship(back_populates="experiments")
+    data_sensivitity_name: Optional["Experiment_DataSensitivity__Base"] = Relationship(
+        back_populates="experiments"
+    )
+    status_name: Optional["Experiment_Status__Base"] = Relationship(
+        back_populates="experiments"
+    )
+
+    async def __admin_repr__(self, _):
+        return f"{self.name} (SPIR-{self.id:04d})"
+
+    async def __admin_select2_repr__(self, _) -> str:
+        from html import escape
+
+        return f"<div><span>{escape(f"SPIR-{self.name} (SPIR-{self.id:04d})")}</span></div>"
 
 
 class Experiment(SQLModel):

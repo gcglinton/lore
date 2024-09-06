@@ -1,6 +1,7 @@
+from typing import TYPE_CHECKING, Optional
+
 import datetime
 import uuid
-from typing import Optional
 from pydantic import EmailStr
 
 from sqlmodel import TEXT, Column, Field, SQLModel

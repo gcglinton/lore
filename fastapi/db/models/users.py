@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from sqlmodel import Column, TEXT, SQLModel, Field, Relationship
 from pydantic import EmailStr
@@ -6,6 +6,9 @@ from pydantic import EmailStr
 from sqlalchemy import DateTime, func
 
 import datetime
+
+if TYPE_CHECKING:
+    from db.models import Department__Base
 
 
 class User__Base(SQLModel, table=True):

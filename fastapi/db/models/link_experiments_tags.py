@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING, Optional
+
 from sqlmodel import Field, SQLModel
 
 
