@@ -246,6 +246,8 @@ def upgrade() -> None:
             ["status"],
             ["experiment_statuses.id"],
         ),
+        sa.ForeignKeyConstraint(["lego_evo_lead"], ["users.id"]),
+        sa.ForeignKeyConstraint(["lego_evo_second"], ["users.id"]),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
@@ -259,6 +261,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_experiments_is_deleted"), "experiments", ["is_deleted"], unique=False)
     op.create_index(op.f("ix_experiments_status"), "experiments", ["status"], unique=False)
+
     op.create_table(
         "link_experiments_related",
         sa.Column("experiment_1", sa.Integer(), nullable=False),
