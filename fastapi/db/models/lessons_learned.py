@@ -1,6 +1,7 @@
 import datetime
 import uuid
 from typing import Optional
+from pydantic import EmailStr
 
 from sqlmodel import TEXT, Column, Field, SQLModel
 
@@ -55,7 +56,7 @@ class Lessons_Learned__Send(SQLModel):
 class Lessons_Learned__Sent(SQLModel):
     experiment_id: int
     user_id: int
-    user_email: str
+    user_email: EmailStr
     guid: uuid.UUID
     sent: datetime.datetime
 

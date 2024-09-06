@@ -112,13 +112,16 @@ def send_lessons_learned(body_data: Lessons_Learned__Send, response: Response):
             sent_ids.append(new_data.id)
 
         sent_rows = (
-            select(Lessons_Learned__Base, col(User__Base.email).label("user_email"))
+            select(
+                col(Lessons_Learned__Base.experiment_id).label("experiment_id"),
+                col(Lessons_Learned__Base.user_id).label("user_id"),
+                col(Lessons_Learned__Base.guid).label("guid"),
+                col(Lessons_Learned__Base.sent).label("sent"),
+                col(User__Base.email).label("user_email"),
+            )
             .join(User__Base)
             .where(col(Lessons_Learned__Base.id).in_(sent_ids))
         )
-
-        print(f"{sent_ids}")
-        print(sent_rows)
 
         response.status_code = status.HTTP_202_ACCEPTED
         return db.exec(sent_rows).all()
