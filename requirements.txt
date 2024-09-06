@@ -2,3 +2,4 @@ Django==5.1
 sqlmodel==0.0.21
 fastapi[standard]==0.112.2
 alembic==1.13.2
+starlette-admin==0.14.1
