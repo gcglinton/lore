@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlmodel import Field, SQLModel
+from sqlmodel import SQLModel, Field, Relationship
 from sqlmodel import Column, TEXT
 
 
@@ -24,6 +24,16 @@ class Department__Base(SQLModel, table=True):
     description: Optional[str] = Field(sa_column=Column(TEXT))
     is_science: Optional[bool] = Field(default=0, index=hash)
     is_deleted: Optional[bool] = Field(default=0, index=hash)
+
+    users: list["User__Base"] = Relationship(back_populates="department_name")
+
+    async def __admin_repr__(self, _):
+        return f"{self.name} ({self.acronym})"
+
+    async def __admin_select2_repr__(self, _) -> str:
+        from html import escape
+
+        return f"<div><span>{escape(f"{self.name} ({self.acronym})")}</span></div>"
 
 
 class Department(SQLModel):
