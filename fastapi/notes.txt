@@ -15,3 +15,4 @@ General
 https://github.com/jowilf/starlette-admin
 
 https://github.com/awtkns/fastapi-crudrouter?tab=readme-ov-file
+
