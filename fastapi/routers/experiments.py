@@ -1,9 +1,17 @@
-from fastapi import APIRouter, HTTPException, Query, Response, status
-from sqlmodel import Session, select, delete, or_, and_, alias, col
-from sqlalchemy import exc
-
 from db import engine
-from db.models.experiments import *
+from db.models import (
+    Cloud_Provider__Base,
+    Department__Base,
+    Experiment_AreaOfScience__Base,
+    Experiment_DataSensitivity__Base,
+    Experiment_FundingSource__Base,
+    Experiment_LevelOfEffort__Base,
+    Experiment_Status__Base,
+)
+from db.models.experiments import Experiment, Experiment__Base, Experiment__Edit
+from sqlmodel import Session, and_, col, select
+
+from fastapi import APIRouter, HTTPException, Query, Response, status
 
 router = APIRouter(
     prefix="/experiments",
@@ -12,18 +20,6 @@ router = APIRouter(
 
 
 def validate_foreign_keys(data):
-
-    from db.models import (
-        Department__Base,
-        Cloud_Provider__Base,
-        Experiment_AreaOfScience__Base,
-        Experiment_DataSensitivity__Base,
-        Experiment_FundingSource__Base,
-        Experiment_LevelOfEffort__Base,
-        Experiment_Status__Base,
-        User__Base,
-    )
-
     with Session(engine) as db:
         if data.department:
             department = db.get(Department__Base, data.department)
@@ -35,12 +31,16 @@ def validate_foreign_keys(data):
         #     raise HTTPException(status_code=400, detail="invalid user")
 
         if data.cloud_provider_requested:
-            cloud_provider_requested = db.get(Cloud_Provider__Base, data.cloud_provider_requested)
+            cloud_provider_requested = db.get(
+                Cloud_Provider__Base, data.cloud_provider_requested
+            )
             if data.cloud_provider_requested and not cloud_provider_requested:
                 raise HTTPException(status_code=400, detail="invalid cloud provider")
 
         if data.cloud_provider_actual:
-            cloud_provider_actual = db.get(Cloud_Provider__Base, data.cloud_provider_actual)
+            cloud_provider_actual = db.get(
+                Cloud_Provider__Base, data.cloud_provider_actual
+            )
             if not cloud_provider_actual:
                 raise HTTPException(status_code=400, detail="invalid cloud provider")
 
@@ -50,12 +50,16 @@ def validate_foreign_keys(data):
                 raise HTTPException(status_code=400, detail="invalid status")
 
         if data.area_of_science:
-            area_of_science = db.get(Experiment_AreaOfScience__Base, data.area_of_science)
+            area_of_science = db.get(
+                Experiment_AreaOfScience__Base, data.area_of_science
+            )
             if not area_of_science:
                 raise HTTPException(status_code=400, detail="invalid area of science")
 
         if data.level_of_effort:
-            level_of_effort = db.get(Experiment_LevelOfEffort__Base, data.level_of_effort)
+            level_of_effort = db.get(
+                Experiment_LevelOfEffort__Base, data.level_of_effort
+            )
             if not level_of_effort:
                 raise HTTPException(status_code=400, detail="invalid level of effort")
 
@@ -65,7 +69,9 @@ def validate_foreign_keys(data):
                 raise HTTPException(status_code=400, detail="invalid funding source")
 
         if data.data_sensivitity:
-            data_sensivitity = db.get(Experiment_DataSensitivity__Base, data.data_sensivitity)
+            data_sensivitity = db.get(
+                Experiment_DataSensitivity__Base, data.data_sensivitity
+            )
             if not data_sensivitity:
                 raise HTTPException(status_code=400, detail="invalid data sensitivity")
 
@@ -78,13 +84,15 @@ def list_experiments(
     offset: int = 0,
     limit: int = Query(default=100, le=100),
     status: list[int] = Query(default=[]),
-    evo_lead: int = None,
-    evo_second: int = None,
+    evo_lead: int = 0,
+    evo_second: int = 0,
     cloud_provider: list[int] = Query(default=[]),
     department: list[int] = Query(default=[]),
 ):
     with Session(engine) as db:
-        statement = select(Experiment__Base).where(Experiment__Base.is_deleted == 0)
+        statement = select(
+            Experiment__Base,
+        ).where(Experiment__Base.is_deleted == 0)
 
         filters = []
         if status:
@@ -97,7 +105,9 @@ def list_experiments(
             filters.append(Experiment__Base.lego_evo_second == evo_second)
 
         if cloud_provider:
-            filters.append(col(Experiment__Base.cloud_provider_actual).in_(cloud_provider))
+            filters.append(
+                col(Experiment__Base.cloud_provider_actual).in_(cloud_provider)
+            )
 
         if department:
             filters.append(col(Experiment__Base.department).in_(department))
@@ -128,25 +138,26 @@ def add_experiment(body_data: Experiment__Edit, response: Response):
         return new_data
 
 
-@router.get("/{experiment_id}")
+@router.get(
+    "/{experiment_id}",
+    response_model=Experiment,
+)
 def get_an_experiment(experiment_id: int):
     with Session(engine) as db:
-
         dbrow = db.get(Experiment__Base, experiment_id)
         if not dbrow or dbrow.is_deleted:
             raise HTTPException(status_code=404)
 
         # return dbrow
 
+        from db.models import Department__Base, Experiment_AreaOfScience__Base
         from sqlalchemy import text
-
-        from db.models import Experiment_AreaOfScience__Base, Department__Base
 
         bigassquery = (
             select(
                 Experiment__Base,
-                col(Experiment_AreaOfScience__Base.name).label("area_of_science_name"),
-                col(Department__Base.name).label("department_name"),
+                Experiment_AreaOfScience__Base,
+                Department__Base,
             )
             .join(Experiment_AreaOfScience__Base)
             .join(Department__Base)
@@ -157,6 +168,7 @@ def get_an_experiment(experiment_id: int):
 
         bigassquery_result = db.exec(bigassquery).all()
         print(bigassquery_result)
+        return bigassquery_result
 
         # experiments.area_of_science, experiment_areaofscience.name AS area_of_science_name,
         # experiments.cloud_provider_actual, cp_actual.name_short AS cloud_provider_actual_name,
@@ -259,4 +271,6 @@ def delete_experiment(experiment_id: int):
             raise HTTPException(status_code=404)
         row.is_deleted = 1
         db.add(row)
+        db.commit()
+        db.commit()
         db.commit()

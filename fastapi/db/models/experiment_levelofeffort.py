@@ -1,7 +1,9 @@
 from typing import TYPE_CHECKING, Optional
 
-from sqlmodel import Field, SQLModel
-from sqlmodel import Column, TEXT
+from sqlmodel import TEXT, Column, Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from db.models import Experiment__Base
 
 
 class Experiment_LevelOfEffort__Base(SQLModel, table=True):
@@ -10,6 +12,10 @@ class Experiment_LevelOfEffort__Base(SQLModel, table=True):
     name: str
     description: Optional[str] = Field(default=None, sa_column=Column(TEXT))
     is_deleted: Optional[bool] = Field(default=0, index=hash)
+
+    experiments: list["Experiment__Base"] = Relationship(
+        back_populates="level_of_effort_name"
+    )
 
     async def __admin_repr__(self, _):
         return f"{self.name}"

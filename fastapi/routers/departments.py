@@ -1,8 +1,8 @@
-from sqlmodel import Session, select, col, and_
-from fastapi import APIRouter, HTTPException, Query, Response, status
-
 from db import engine
 from db.models.departments import Department, Department__Base, Department__Edit
+from sqlmodel import Session, and_, select
+
+from fastapi import APIRouter, HTTPException, Query, Response, status
 
 router = APIRouter(
     prefix="/departments",
@@ -24,7 +24,7 @@ def list_departments(
 
         filters = []
         if only_science:
-            filters.append(Department__Base.is_science == True)
+            filters.append(Department__Base.is_science)
 
         if filters:
             statement = statement.where(and_(*filters))

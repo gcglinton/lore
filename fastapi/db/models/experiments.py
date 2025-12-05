@@ -1,22 +1,28 @@
+import datetime
 from typing import TYPE_CHECKING, Optional
-
-from sqlmodel import Field, SQLModel
-from sqlmodel import Column, TEXT, Relationship
 
 from sqlalchemy import DateTime, func
 from sqlalchemy.orm import relationship as sa_relationship
-
-import datetime
+from sqlmodel import TEXT, Column, Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
-    from db.models import Department__Base
-    from db.models import Experiment_AreaOfScience__Base, Experiment_DataSensitivity__Base, Experiment_Status__Base
+    from db.models import (
+        Department__Base,
+        Experiment_AreaOfScience__Base,
+        Experiment_DataSensitivity__Base,
+        Experiment_FundingSource__Base,
+        Experiment_LevelOfEffort__Base,
+        Experiment_Status__Base,
+    )
+
 
 class Experiment__Base(SQLModel, table=True):
     __tablename__ = "experiments"
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
-    status: Optional[int] = Field(default=None, foreign_key="experiment_statuses.id", index=hash)
+    status: Optional[int] = Field(
+        default=None, foreign_key="experiment_statuses.id", index=hash
+    )
     created_at: datetime.datetime = Field(
         default_factory=datetime.datetime.utcnow,
     )
@@ -29,12 +35,18 @@ class Experiment__Base(SQLModel, table=True):
     department: int = Field(foreign_key="departments.id")
     research_initiative: Optional[int] = Field(default=None)
     level_of_effort: Optional[int] = Field(foreign_key="experiment_levelofeffort.id")
-    funding_source: Optional[int] = Field(default=None, foreign_key="experiment_fundingsource.id")
+    funding_source: Optional[int] = Field(
+        default=None, foreign_key="experiment_fundingsource.id"
+    )
     data_sensivitity: Optional[int] = Field(
         default=None, foreign_key="experiment_datasensitivity.id"
     )
-    cloud_provider_requested: Optional[int] = Field(default=None, foreign_key="cloud_providers.id")
-    cloud_provider_actual: Optional[int] = Field(default=None, foreign_key="cloud_providers.id")
+    cloud_provider_requested: Optional[int] = Field(
+        default=None, foreign_key="cloud_providers.id"
+    )
+    cloud_provider_actual: Optional[int] = Field(
+        default=None, foreign_key="cloud_providers.id"
+    )
     background: Optional[str] = Field(default=None, sa_column=Column(TEXT))
     description: Optional[str] = Field(default=None, sa_column=Column(TEXT))
     goals: Optional[str] = Field(default=None, sa_column=Column(TEXT))
@@ -42,14 +54,20 @@ class Experiment__Base(SQLModel, table=True):
     fin_initial: Optional[float] = Field(default=0.0)
     fin_actual: Optional[float] = Field(default=0.0)
     fin_automated_reports: Optional[bool] = Field(default=False, index=hash)
-    lego_evo_lead: Optional[int] = Field(default=None, foreign_key="users.id", index=hash)
-    lego_evo_second: Optional[int] = Field(default=None, foreign_key="users.id", index=hash)
+    lego_evo_lead: Optional[int] = Field(
+        default=None, foreign_key="users.id", index=hash
+    )
+    lego_evo_second: Optional[int] = Field(
+        default=None, foreign_key="users.id", index=hash
+    )
     progress: Optional[int] = Field(default=0)
     environment_name: Optional[str] = Field(default=None)
     is_deleted: Optional[bool] = Field(default=0, index=hash)
     is_archived: Optional[bool] = Field(default=0, index=hash)
 
-    area_of_science: Optional[int] = Field(default=None, foreign_key="experiment_areaofscience.id")
+    area_of_science: Optional[int] = Field(
+        default=None, foreign_key="experiment_areaofscience.id"
+    )
     area_of_science_name: Optional["Experiment_AreaOfScience__Base"] = Relationship(
         back_populates="experiments"
     )
@@ -63,10 +81,20 @@ class Experiment__Base(SQLModel, table=True):
     #     sa_relationship=(sa_relationship(foreign_keys="cloud_providers.id")),
     # )
 
-    department_name: Optional["Department__Base"] = Relationship(back_populates="experiments")
+    department_name: Optional["Department__Base"] = Relationship(
+        back_populates="experiments"
+    )
     data_sensivitity_name: Optional["Experiment_DataSensitivity__Base"] = Relationship(
         back_populates="experiments"
     )
+    funding_source_name: Optional["Experiment_FundingSource__Base"] = Relationship(
+        back_populates="experiments"
+    )
+
+    level_of_effort_name: Optional["Experiment_LevelOfEffort__Base"] = Relationship(
+        back_populates="experiments"
+    )
+
     status_name: Optional["Experiment_Status__Base"] = Relationship(
         back_populates="experiments"
     )
@@ -77,7 +105,7 @@ class Experiment__Base(SQLModel, table=True):
     async def __admin_select2_repr__(self, _) -> str:
         from html import escape
 
-        return f"<div><span>{escape(f"SPIR-{self.name} (SPIR-{self.id:04d})")}</span></div>"
+        return f"<div><span>{escape(f'SPIR-{self.name} (SPIR-{self.id:04d})')}</span></div>"
 
 
 class Experiment(SQLModel):
@@ -148,5 +176,7 @@ class Experiment_CloudGroupMember(SQLModel):
 class Experiment_CloudGroup(SQLModel):
     GroupName: str
     GroupID: str
+    GroupRole: str
+    Members: list[Experiment_CloudGroupMember]
     GroupRole: str
     Members: list[Experiment_CloudGroupMember]
